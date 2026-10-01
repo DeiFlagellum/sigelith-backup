@@ -1278,7 +1278,8 @@ class MainWindow(QMainWindow):
         actions.addWidget(self.evidence_btn)
         capsule_btn = button(
             tr("Kapsuły czasu…"),
-            tr("Pliki zapieczętowane w tej kopii do daty — nikt, także wydawca, nie otworzy ich wcześniej"),
+            tr("Pliki zapieczętowane w tej kopii do daty — klucze wydają dopiero po niej sieć drand "
+               "i serwer kluczy Sigelith"),
             self._show_capsules,
             icon="shield-lock",
         )

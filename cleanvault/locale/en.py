@@ -1761,14 +1761,14 @@ TEXTS: dict[str, str] = {
         'Opening Sigelith Handover with “{name}” — choose the recipient.',
     'Kapsuły czasu…':
         'Time capsules…',
-    'Pliki zapieczętowane w tej kopii do daty — nikt, także wydawca, nie otworzy ich wcześniej':
-        'Files sealed in this backup until a date — nobody, including the publisher, can open them earlier',
+    'Pliki zapieczętowane w tej kopii do daty — klucze wydają dopiero po niej sieć drand i serwer kluczy Sigelith':
+        'Files sealed in this backup until a date — the drand network and the Sigelith key server release the keys only after it',
     'Wskaż najpierw folder kopii — kapsuła leży w kopii.':
         'Choose the backup folder first — the capsule is kept in the backup.',
     'Kapsuły czasu':
         'Time capsules',
-    'Kapsuła pieczętuje wybrany folder do chwili, którą wskażesz. Wcześniej nie otworzy jej nikt — także wydawca: klucze powstaną dopiero wtedy (sieć drand i serwer kluczy Sigelith). Po tej chwili otworzy ją każdy, kto ma jej pliki. Kapsuła leży w tej kopii, nie na serwerze; otwiera ją strona sigelith.org/capsule/.':
-        'A capsule seals the chosen folder until the moment you pick. Nobody can open it earlier — including the publisher: the keys will only come into existence then (the drand network and the Sigelith key server). After that moment anyone who has its files can open it. The capsule is kept in this backup, not on a server; the sigelith.org/capsule/ page opens it.',
+    'Kapsuła pieczętuje wybrany folder do chwili, którą wskażesz. Otwierają ją dowolne dwie z trzech części: runda sieci drand z tej chwili, udział serwera kluczy Sigelith (wydawany dopiero po tej chwili — to zasada operatora, nie kryptografia) i kod odzyskiwania zapisany obok kapsuły. Kto ma tę kopię, ma więc i kod: do wcześniejszego otwarcia wystarczy mu, że operator złamie swoją zasadę. Po tej chwili otworzy ją każdy, kto ma jej pliki. Kapsuła leży w tej kopii, nie na serwerze; otwiera ją strona sigelith.org/capsule/.':
+        "A capsule seals the chosen folder until the moment you pick. Any two of three parts open it: the drand network's round for that moment, the Sigelith key server's share (released only after that moment — by the operator's policy, not by cryptography) and the recovery code saved next to the capsule. Whoever has this backup therefore has the code too, and needs only the operator to break its policy to open it early. After that moment anyone who has its files can open it. The capsule is kept in this backup, not on a server; the sigelith.org/capsule/ page opens it.",
     'Wybierz kapsułę z listy albo utwórz nową.':
         'Choose a capsule from the list or create a new one.',
     'Nowa kapsuła…':

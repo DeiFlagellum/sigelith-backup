@@ -1,16 +1,19 @@
 """Kapsuła czasu w kopii — koperta ``beattime-seal-v1`` (ta sama co sigelith.org/capsule/).
 
-Po co: wybrane pliki zapieczętowane do daty tak, że NIKT — także wydawca — nie
-otworzy ich wcześniej, a kapsuła leży w kopii użytkownika, nie na serwerze
-(„minimum odpowiedzialności”). Np. dokumenty dla rodziny „do otwarcia w 2036”.
+Po co: wybrane pliki zapieczętowane do daty tak, że żaden pojedynczy posiadacz
+klucza nie otworzy ich wcześniej, a kapsuła leży w kopii użytkownika, nie na
+serwerze („minimum odpowiedzialności”). Np. dokumenty dla rodziny „do otwarcia w 2036”.
 
 Jak (profil „standard” strony kapsuły, SEAL.md): sekret 32 B dzielony Shamirem
 2 z 3 — udział dla sieci drand (runda wypadająca na zadany @beat), udział dla
 serwera kluczy Sigelith (tożsamość tego @beatu) i udział dla użytkownika (kod
 odzyskiwania). Udziały beaconów są zaszyfrowane IBE (ibe.py) do tożsamości,
-których klucze powstają dopiero w tamtej chwili. Przed nią sam kod odzyskiwania
-nie wystarcza; po niej wystarczą dowolne dwa udziały — więc zniknięcie jednego
-operatora nie zamyka kapsuły na zawsze.
+których klucze wydają dopiero w tamtej chwili sieć drand (podpis progowy) i serwer
+kluczy — ten z zasady, bo kluczem głównym mógłby je policzyć wcześniej. Przed nią
+sam kod odzyskiwania nie wystarcza, ale leży obok kapsuły (rescue.capsule_note),
+więc kto ma kopię, temu do wcześniejszego otwarcia wystarczy złamanie tej zasady
+przez operatora. Po tej chwili wystarczą dowolne dwa udziały — więc zniknięcie
+jednego operatora nie zamyka kapsuły na zawsze.
 
 Treść: pakiet ZIP wybranych plików (``meta``: kind=file, name, type), jak plik
 wybrany na stronie kapsuły; szyfrowanie AES-256-GCM segmentami po 64 KiB. Wynik

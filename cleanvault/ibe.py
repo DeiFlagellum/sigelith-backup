@@ -2,8 +2,10 @@
 
 Kapsuła czasu (capsule.py, format ``beattime-seal-v1``) szyfruje udziały sekretu
 „do przyszłości”: do tożsamości rundy drand i do tożsamości @beatu na serwerze
-kluczy Sigelith. Klucz prywatny takiej tożsamości (podpis BLS) powstaje dopiero
-w tamtej chwili, więc wcześniej nikt — także wydawca — udziału nie odszyfruje.
+kluczy Sigelith. Klucz prywatny takiej tożsamości (podpis BLS) sieć drand tworzy
+dopiero w tamtej chwili (o ile nie zmówi się jej próg), a serwer kluczy wydaje go
+dopiero wtedy z zasady — swoim kluczem głównym mógłby go policzyć wcześniej.
+Pojedynczy udział niczego nie otwiera: kapsuła wymaga dwóch (capsule.py).
 
 Schemat ``bls-unchained-g1-rfc9380`` (drand quicknet, beat-key): tożsamość
 i podpisy na G1, klucz publiczny na G2. Odpowiednik ``encryptOnG2RFC9380``

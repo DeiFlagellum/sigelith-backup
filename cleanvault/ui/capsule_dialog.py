@@ -46,10 +46,12 @@ class CapsuleDialog(QDialog):
         layout.setSpacing(12)
         layout.addWidget(page_title(tr("Kapsuły czasu"), str(self.root / CAPSULES_DIR)))
         layout.addWidget(Hint(
-            tr("Kapsuła pieczętuje wybrany folder do chwili, którą wskażesz. Wcześniej nie otworzy jej nikt — "
-               "także wydawca: klucze powstaną dopiero wtedy (sieć drand i serwer kluczy Sigelith). Po tej chwili "
-               "otworzy ją każdy, kto ma jej pliki. Kapsuła leży w tej kopii, nie na serwerze; otwiera ją "
-               "strona sigelith.org/capsule/."), icon="clock-history"))
+            tr("Kapsuła pieczętuje wybrany folder do chwili, którą wskażesz. Otwierają ją dowolne dwie z trzech "
+               "części: runda sieci drand z tej chwili, udział serwera kluczy Sigelith (wydawany dopiero po tej "
+               "chwili — to zasada operatora, nie kryptografia) i kod odzyskiwania zapisany obok kapsuły. Kto ma "
+               "tę kopię, ma więc i kod: do wcześniejszego otwarcia wystarczy mu, że operator złamie swoją "
+               "zasadę. Po tej chwili otworzy ją każdy, kto ma jej pliki. Kapsuła leży w tej kopii, nie na "
+               "serwerze; otwiera ją strona sigelith.org/capsule/."), icon="clock-history"))
         self.list = QListWidget()
         layout.addWidget(self.list, 1)
         self.details = field_help(tr("Wybierz kapsułę z listy albo utwórz nową."))

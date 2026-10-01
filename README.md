@@ -13,6 +13,12 @@ Sigelith Backup is the companion app of [Sigelith](https://sigelith.org) — a p
 free proof-of-existence log. The backup works on its own; the Sigelith features are
 optional and send nothing but hashes.
 
+| Backups at a glance | Browse any version like a folder | Sigelith evidence, kept apart |
+|---|---|---|
+| ![Main window: backup templates, their schedule and the last versions](assets/screenshots/backup.webp) | ![Browsing a backup version: folders, file history and search](assets/screenshots/browse.webp) | ![Sigelith evidence: stamped documents kept with their proof files](assets/screenshots/sigelith-evidence.webp) |
+
+Security reports: [SECURITY.md](SECURITY.md).
+
 ---
 
 ## What it does
@@ -45,7 +51,7 @@ optional and send nothing but hashes.
 | **A time proof for any file** | Any file of a sealed version gets its own small proof (`.sigelith-proof`, format `sigelith-file-proof-v1`) and a PDF certificate — a Merkle path with salted leaves, so the proof reveals nothing about the other files. Checked by [Sigelith Desktop](https://github.com/DeiFlagellum/sigelith-desktop) and <https://sigelith.org/verify/>. |
 | **Content audit** | Reads every file of a version back from the drive and compares it with the hashes sealed in the public log — not with the file list stored next to them, which could be forged too. “Last untouched” points to the newest version that still matches its seal. |
 | **Hand over with proof of delivery** | Any version of a file goes straight to Sigelith Handover in Sigelith Desktop; the recipient confirms receipt with their own key. |
-| **Time capsule** | Seals a folder until a date of your choice (format `beattime-seal-v1`, the same as <https://sigelith.org/capsule/>): the keys come into existence only at that moment, on the drand network and the Sigelith key server, so nobody — including the publisher — can open it earlier. Sealing works offline; the capsule stays in your backup. |
+| **Time capsule** | Seals a folder until a date of your choice (format `beattime-seal-v1`, the same as <https://sigelith.org/capsule/>). Any two of three parts open it: the drand round for that moment, the Sigelith key server's share — released only after the date, by the operator's policy rather than by cryptography — and the recovery code, which is saved next to the capsule. Whoever holds the backup therefore needs only the operator to break its policy to open it early. Sealing works offline; the capsule stays in your backup. |
 
 ---
 

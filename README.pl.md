@@ -9,6 +9,12 @@ z internetem łączą się wyłącznie dwie funkcje, które trzeba samemu włąc
 
 **English:** [README.md](README.md) · **Strona:** <https://sigelith.org/backup/>
 
+| Kopie w skrócie | Przeglądanie wersji jak folderu | Dowody Sigelith osobno |
+|---|---|---|
+| ![Okno główne: szablony kopii, ich harmonogram i ostatnie wersje](assets/screenshots/backup-pl.webp) | ![Przeglądanie wersji kopii: foldery, historia pliku i wyszukiwanie](assets/screenshots/browse-pl.webp) | ![Dowody Sigelith: ostemplowane dokumenty razem z plikami dowodu](assets/screenshots/sigelith-evidence-pl.webp) |
+
+Zgłoszenia bezpieczeństwa: [SECURITY.md](SECURITY.md).
+
 ---
 
 ## Co potrafi
@@ -43,7 +49,7 @@ z internetem łączą się wyłącznie dwie funkcje, które trzeba samemu włąc
 | **Dowód czasu dla każdego pliku** | Od 3.0: przy dowolnym pliku z dowolnej oznakowanej wersji „Przeglądanie → Dowód czasu…” zapisuje mały plik dowodu (`.sigelith-proof`, format `sigelith-file-proof-v1`) i certyfikat PDF: ten plik był w kopii w chwili oznakowania — bez ujawniania innych plików (drzewo Merkle'a z solą liści). Sprawdza go Sigelith Desktop i strona sigelith.org/verify/. |
 | **Kopia, której nie da się po cichu podmienić** | Od 3.0: „Znaczniki czasu → Audyt treści” czyta z nośnika każdy plik wersji (po odszyfrowaniu i złożeniu fragmentów) i porównuje z sumami oznakowanymi w publicznym dzienniku Sigelith — wzorcem jest pieczęć, nie spis treści obok plików, więc podmiany nie ukryje nawet podrobiony spis. „Ostatnia nietknięta” wskazuje najnowszą wersję zgodną z pieczęcią. Po każdej kopii z pieczęcią program sam sprawdza próbkę starszej, podpisanej wersji. |
 | **Przekazanie z kopii z dowodem doręczenia** | Od 3.0: „Przeglądanie → Przekaż…” zapisuje wybraną wersję pliku (np. umowę z marca) i otwiera ją w Sigelith Handover (Sigelith Desktop 3.0.1+, alias `sigelith-desktop.exe --handover`): odbiorca potwierdza odbiór własnym kluczem, a chwila doręczenia trafia do publicznego dziennika. Bez Sigelith Desktop program mówi, skąd go wziąć. |
-| **Kapsuła czasu w kopii** | Od 3.0: „Przywracanie → Kapsuły czasu…” pieczętuje wybrany folder do daty (format `beattime-seal-v1`, ten sam co sigelith.org/capsule/): klucze powstaną dopiero w tej chwili — w sieci drand i na serwerze kluczy Sigelith — więc wcześniej nie otworzy go nikt, także wydawca. Kapsuła leży w kopii (folder `Sigelith Capsules`), nie na serwerze; obok niej kod odzyskiwania, który zastępuje jeden z kluczy, gdyby po dacie był niedostępny. Otwiera ją strona sigelith.org/capsule/. |
+| **Kapsuła czasu w kopii** | Od 3.0: „Przywracanie → Kapsuły czasu…” pieczętuje wybrany folder do daty (format `beattime-seal-v1`, ten sam co sigelith.org/capsule/). Kapsułę otwierają dowolne dwie z trzech części: runda drand z tej chwili, udział serwera kluczy Sigelith — wydawany dopiero po dacie, co jest zasadą operatora, a nie wymogiem kryptografii — i kod odzyskiwania. Kapsuła leży w kopii (folder `Sigelith Capsules`), nie na serwerze; obok niej kod odzyskiwania, który zastępuje jeden z kluczy, gdyby po dacie był niedostępny. Kto ma kopię, ma więc i kod: do wcześniejszego otwarcia wystarczy mu, że operator złamie swoją zasadę. Otwiera ją strona sigelith.org/capsule/. |
 | **Odporność na przerwania** | Plik dostaje czas modyfikacji źródła dopiero po utrwaleniu danych na nośniku, więc przerwany zapis nigdy nie wygląda na kompletny. Istniejący plik jest zastępowany przez plik tymczasowy, nigdy nadpisywany w miejscu. Postęp trafia co kilka sekund do dziennika punktów kontrolnych — przerwanie kopii, także wyłączenie komputera, trwa ułamek sekundy i nie gubi informacji o tym, co już zapisano. |
 | **Wznawianie i uzupełnianie** | Przerwaną kopię można dokończyć: przy ponownym uruchomieniu program sam proponuje uzupełnienie niedokończonej wersji zamiast tworzenia nowej, pełnej. Do wybranej wersji dogrywane są tylko brakujące i zmienione pliki; to, co już w niej leży, jest rozpoznawane bezpośrednio z nośnika, więc działa nawet bez spisu treści. |
 | **Dogrywka zmian** | Kopia wielu gigabajtów trwa godzinami, a źródło w tym czasie żyje. Po głównym przebiegu źródło jest skanowane ponownie i nowe lub zmienione pliki trafiają do tej samej wersji. Plik zmieniony w trakcie własnego kopiowania nigdy nie jest uznawany za zapisany. |
