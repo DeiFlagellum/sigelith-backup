@@ -1,0 +1,55 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.so
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# --- Środowiska wirtualne ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- Artefakty budowania (PyInstaller) ---
+build/
+dist/
+*.manifest
+
+# --- Dane użytkownika ---
+# Stan aplikacji mieszka w %LOCALAPPDATA%\CleanVault, ale gdyby ktoś uruchomił
+# starszą wersję z katalogu repozytorium, te pliki nie mogą trafić do gita:
+# zawierają prywatne ścieżki, sumy kontrolne, a w 1.x także hasła.
+*.msgpack
+*.msgpack.bak
+*.msgpack.tmp
+*.msgpack.corrupt-*
+.cleanvault-manifest*
+vault_db/
+vault_state.msgpack
+lbma_state.msgpack
+
+# --- Pliki zaszyfrowane ---
+*.cvlt
+*.enc
+
+# --- Dzienniki ---
+*.log
+logs/
+
+# --- IDE i system ---
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Sekrety ---
+.env
+.env.*
+*.pem
+*.key

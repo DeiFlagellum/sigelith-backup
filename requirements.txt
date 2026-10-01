@@ -1,0 +1,15 @@
+# Sigelith Backup — zależności produkcyjne
+# Instalacja:  py -3.12 -m venv .venv && .venv\Scripts\pip install -r requirements.txt
+
+PySide6==6.11.2          # interfejs graficzny (Qt 6)
+pycryptodomex==3.23.0    # AES-256-GCM; celowo "x" — nie koliduje z pakietem Crypto
+msgpack==1.2.2           # serializacja stanu i manifestów
+argon2-cffi==25.1.0      # wyprowadzanie klucza z hasła (Argon2id)
+keyring==25.7.0          # Menedżer poświadczeń Windows dla zapamiętanych haseł
+fastcdc==1.7.0           # zapis różnicowy dużych plików: podział FastCDC (rozszerzenie w C)
+click==8.5.0             # wymagany przez fastcdc przy imporcie (jego narzędzie wiersza poleceń)
+py_ecc==8.0.0            # krzywa BLS12-381 dla kapsuły czasu (IBE jak drand/tlock); sam rdzeń, bez py_ecc.bls
+# start przy logowaniu w wersji ze Sklepu (API StartupTask pakietu MSIX)
+winrt-runtime==3.2.1; sys_platform == "win32"
+winrt-Windows.ApplicationModel==3.2.1; sys_platform == "win32"
+winrt-Windows.Foundation==3.2.1; sys_platform == "win32"

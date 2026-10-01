@@ -1,0 +1,5 @@
+# Publiczne repozytorium (tools/publish_public.py) powstaje z `git archive` — pliki
+# oznaczone export-ignore zostają tylko tutaj: wewnętrzne notatki, plany i teksty
+# robocze do Sklepu oraz plik obszaru roboczego VS Code.
+docs export-ignore
+workspace.code-workspace export-ignore

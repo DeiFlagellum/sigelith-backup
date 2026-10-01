@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Manifest pakietu MSIX programu Sigelith Backup — szablon.
+  Pola oznaczone znakiem dolara (nazwa i wydawca pakietu, wersja) wypełnia
+  tools/build_msix.py. Do Sklepu muszą to być dokładnie wartości ze strony
+  „Tożsamość produktu” w Partner Center; do testów wystarczą domyślne.
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
+  xmlns:uap10="http://schemas.microsoft.com/appx/manifest/uap/windows10/10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  IgnorableNamespaces="uap uap5 uap10 rescap">
+
+  <Identity
+    Name="$identity_name"
+    Publisher="$publisher"
+    Version="$version"
+    ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>Sigelith Backup</DisplayName>
+    <PublisherDisplayName>$publisher_display_name</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <!--
+      19045 = Windows 10 22H2 — ostatnie i jedyne wciąż wspierane wydanie Windows 10 (jak w Sigelith
+      Desktop); zadanie startowe z parametrem (uap10:Parameters) działa od 19041. Windows 11 ma
+      wyższe numery, a MaxVersionTested niczego nie ogranicza.
+    -->
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.19045.0" MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="en-US" />
+    <Resource Language="pl-PL" />
+  </Resources>
+
+  <Applications>
+    <Application Id="App" Executable="SigelithBackup.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements
+        DisplayName="Sigelith Backup"
+        Description="Backups of your folders to an external drive: versions, encryption, one-click restore."
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="Sigelith Backup" />
+      </uap:VisualElements>
+      <Extensions>
+        <!--
+          Start w tle przy logowaniu — harmonogram kopii działa wewnątrz programu.
+          Domyślnie wyłączony: włącza go program (API StartupTask), gdy użytkownik
+          ustawi kopie planowe; wyłączyć można w programie albo w Ustawieniach Windows.
+        -->
+        <uap5:Extension
+          Category="windows.startupTask"
+          Executable="SigelithBackup.exe"
+          EntryPoint="Windows.FullTrustApplication"
+          uap10:Parameters="--background">
+          <uap5:StartupTask TaskId="SigelithBackupStartup" Enabled="false" DisplayName="Sigelith Backup" />
+        </uap5:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <!-- Program desktopowy (Win32): czyta wskazane przez użytkownika foldery i zapisuje na dyski zewnętrzne. -->
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

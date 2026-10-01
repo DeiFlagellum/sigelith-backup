@@ -1,0 +1,70 @@
+Sigelith Backup
+Copyright (c) 2025–2026 Adam Koch
+
+-------------------------------------------------------------------------------
+PL
+-------------------------------------------------------------------------------
+
+Sigelith Backup jest wolnym oprogramowaniem: możesz go rozpowszechniać i zmieniać
+na warunkach licencji GNU General Public License opublikowanej przez Free Software
+Foundation, w wersji 3 albo (według Twojego wyboru) dowolnej późniejszej. Pełny
+tekst licencji jest w pliku GPL-3.0.txt.
+
+Program rozpowszechniany jest BEZ JAKIEJKOLWIEK GWARANCJI, także domyślnej
+gwarancji przydatności handlowej albo przydatności do określonego celu —
+szczegóły w punktach 15–17 licencji GNU GPL.
+
+Kod źródłowy: https://github.com/DeiFlagellum/sigelith-backup
+
+Te warunki obowiązują niezależnie od tego, skąd program pochodzi — z Microsoft
+Store, z serwisu GitHub czy z innego źródła. Licencja obejmuje kod, nie nazwę:
+nazwa „Sigelith” i logo nie są nią objęte (punkt 7 lit. e licencji), więc
+zmienioną wersję wolno rozpowszechniać pod inną nazwą.
+
+Program zawiera składniki osób trzecich udostępniane na ich własnych licencjach,
+w tym biblioteki Qt i PySide6 na licencji GNU LGPL w wersji 3. Wykaz składników,
+informacje o prawach autorskich i teksty licencji są w pliku THIRD-PARTY-NOTICES.txt
+oraz w plikach LGPL-3.0.txt, GPL-3.0.txt i PYTHON-LICENSE.txt — w szczególności
+wolno modyfikować i zastępować biblioteki objęte LGPL oraz badać program w celu
+usuwania błędów w takich modyfikacjach.
+
+Program zawiera biblioteki uruchomieniowe Microsoft (Microsoft Distributable Code);
+korzystanie z nich podlega także warunkom, na jakich Microsoft je udostępnia.
+
+Program zapisuje kopie zapasowe na nośnikach i w usługach wskazanych przez
+użytkownika. Wydawca nie ma dostępu do tych danych ani do haseł kopii — hasła
+nie da się odzyskać ani zresetować.
+
+-------------------------------------------------------------------------------
+EN
+-------------------------------------------------------------------------------
+
+Sigelith Backup is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later version.
+The full license text is in GPL-3.0.txt.
+
+This program is distributed WITHOUT ANY WARRANTY; without even the implied warranty
+of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE — see sections 15–17 of the
+GNU GPL for details.
+
+Source code: https://github.com/DeiFlagellum/sigelith-backup
+
+These terms apply wherever the program comes from — the Microsoft Store, GitHub or
+any other source. The license covers the code, not the name: the name "Sigelith"
+and the logo are not licensed (section 7(e) of the license), so a modified version
+may be distributed under a different name.
+
+The program includes third-party components under their own licenses, including the
+Qt and PySide6 libraries under the GNU LGPL version 3. The list of components,
+copyright notices and license texts are in THIRD-PARTY-NOTICES.txt and in LGPL-3.0.txt,
+GPL-3.0.txt and PYTHON-LICENSE.txt — in particular, you may modify and replace the
+LGPL-licensed libraries and reverse engineer the program for debugging such
+modifications.
+
+The program includes Microsoft runtime libraries (Microsoft Distributable Code); their
+use is also subject to the terms under which Microsoft makes them available.
+
+The program stores backups on the drives and in the services chosen by the user. The
+publisher has no access to that data or to backup passwords — a password cannot be
+recovered or reset.
