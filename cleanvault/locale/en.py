@@ -1813,4 +1813,14 @@ TEXTS: dict[str, str] = {
         'capsule',
     'Chwila otwarcia musi być w przyszłości.':
         'The opening moment must be in the future.',
+    'Na bieżąco':
+        'Live',
+    'Zmiany w folderach źródłowych trafiają do dzisiejszej wersji kopii kilka minut po zapisie, a po podłączeniu dysku kopia od razu się synchronizuje. Jedna wersja na dzień; ze znacznikami czasu zamyka ją pieczęć następnego dnia.':
+        "Changes in the source folders go into today's backup version a few minutes after they are saved, and when the drive is connected the backup catches up at once. One version per day; with timestamps it is closed by a seal the next day.",
+    'Na bieżąco — po każdej zmianie i po podłączeniu dysku':
+        'Live — after every change and when the drive is connected',
+    'Dla dysku podłączonego na stałe albo często: zmiany trafiają do kopii kilka minut po zapisie, a po podłączeniu dysku kopia od razu się synchronizuje.':
+        'For a drive that is always or often connected: changes reach the backup a few minutes after they are saved, and when the drive is connected the backup catches up at once.',
+    'Kopia będzie na bieżąco: zmiany trafią do dzisiejszej wersji kilka minut po zapisie, a po podłączeniu dysku kopia od razu się zsynchronizuje.':
+        "The backup will stay current: changes go into today's version a few minutes after they are saved, and when the drive is connected the backup catches up at once.",
 }

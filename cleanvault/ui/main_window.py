@@ -72,6 +72,7 @@ from .. import (
 )
 from ..engine import BackupConfig, human_size
 from ..i18n import mark, plural, tr
+from ..live import plan_live_run
 from ..log import bridge, get_logger
 from ..paths import data_dir, is_admin, log_dir, resource_path
 from ..s3 import S3Client, S3Target
@@ -198,6 +199,8 @@ class MainWindow(QMainWindow):
         self._quitting = False
         #: bieżąca operacja uruchomiona przez harmonogram — bez okien dialogowych
         self._unattended = False
+        #: id szablonu „na bieżąco”, którego kopia właśnie trwa (dla ChangeTracker)
+        self._live_run: str | None = None
         self.tray: Tray | None = None
         # Start programu wczytuje stan wcześniej (potrzebuje języka przed
         # zbudowaniem okna) i przekazuje go tutaj — jeden odczyt zamiast dwóch.
@@ -982,6 +985,7 @@ class MainWindow(QMainWindow):
         on_success,
         description: str,
         unattended: bool = False,
+        live: bool = False,
     ) -> None:
         """Uruchamia kopię, najpierw sprawdzając, czy nie ma czego dokończyć.
 
@@ -1001,6 +1005,17 @@ class MainWindow(QMainWindow):
             return engine.inspect_destination(config.destination, load_manifest=True)
 
         def inspected(info: engine.DestinationInfo) -> None:
+            if live:
+                # „Na bieżąco”: do dzisiejszej wersji; opieczętowanej nie ruszamy, a wczorajszą
+                # przy włączonych znacznikach zamykamy pieczęcią (cleanvault/live.py).
+                plan = plan_live_run(info.runs_for(engine.source_labels(config.sources)),
+                                     config.destination, time.time(), config.timestamp)
+                adjusted = replace(config, target_version=plan.target_version, timestamp=plan.seal,
+                                   stamp_updates=False, catchup_passes=0)
+                self._after_worker = lambda: self._start_backup_job(
+                    adjusted, keyring, panel, on_success, description
+                )
+                return
             self._after_worker = lambda: self._continue_launch(
                 config, keyring, panel, on_success, description, info
             )
@@ -1648,6 +1663,7 @@ class MainWindow(QMainWindow):
         self.schedule_combo.addItem(tr("Ręcznie"), scheduler.MANUAL)
         self.schedule_combo.addItem(tr("Codziennie o godzinie"), scheduler.DAILY)
         self.schedule_combo.addItem(tr("Po podłączeniu dysku docelowego"), scheduler.ON_CONNECT)
+        self.schedule_combo.addItem(tr("Na bieżąco"), scheduler.LIVE)
         self.schedule_combo.setToolTip(tr("Kiedy kopia z tego szablonu ma ruszać sama."))
         self.schedule_time = QTimeEdit()
         self.schedule_time.setDisplayFormat("HH:mm")
@@ -1809,6 +1825,10 @@ class MainWindow(QMainWindow):
                       "po jego włączeniu.").format(when=when)
         elif template.schedule == scheduler.ON_CONNECT:
             text = tr("Kopia ruszy po podłączeniu dysku docelowego — najwyżej raz na 12 godzin.")
+        elif template.schedule == scheduler.LIVE:
+            text = tr("Zmiany w folderach źródłowych trafiają do dzisiejszej wersji kopii kilka minut "
+                      "po zapisie, a po podłączeniu dysku kopia od razu się synchronizuje. Jedna "
+                      "wersja na dzień; ze znacznikami czasu zamyka ją pieczęć następnego dnia.")
         else:
             return tr("Kopia rusza tylko wtedy, gdy ją uruchomisz.")
         return text + " " + self._background_status()
@@ -1993,12 +2013,14 @@ class MainWindow(QMainWindow):
             return
         self._run_template_now(self.store.get_template(self.selected_template_id))
 
-    def _run_template_now(self, template: Template, unattended: bool = False) -> None:
+    def _run_template_now(self, template: Template, unattended: bool = False, live: bool = False) -> None:
         """Uruchamia kopię z szablonu — z ekranu szablonów, z zasobnika albo z harmonogramu.
 
         ``unattended``: nikt nie siedzi przy komputerze, więc żadnych okien
         dialogowych — brak zapamiętanego hasła kończy się powiadomieniem,
         niedokończona wersja jest uzupełniana, a wynik trafia do powiadomienia.
+        ``live``: dogrywka trybu „na bieżąco” — do dzisiejszej wersji, bez powiadomienia
+        o sukcesie (byłoby co kilka minut).
         """
         keyring = None
         if template.encrypt:
@@ -2041,7 +2063,18 @@ class MainWindow(QMainWindow):
             sigelith=template.sigelith,
         )
 
+        service = getattr(self, "scheduler_service", None)
+        tracked = service is not None and template.schedule == scheduler.LIVE
+        if tracked:
+            service.live_tracker.started(template.id)
+            self._live_run = template.id
+
         def done(result: engine.OperationResult) -> None:
+            if tracked:
+                service.live_tracker.finished(template.id, result.ok)
+                if result.ok and not live:
+                    service.live_tracker.release(template.id)  # człowiek uruchomił kopię sam
+                self._live_run = None
             # Szablon mógł zostać zmieniony w trakcie wielogodzinnej kopii (np. inny
             # harmonogram) — zapisujemy wynik na świeżo wczytanym, nie na starej kopii.
             current = self.store.get_template(template.id) or template
@@ -2061,7 +2094,8 @@ class MainWindow(QMainWindow):
             )
             self._refresh_templates()
             self._report_result(
-                result, tr("Szablon „{name}”").format(name=current.name), unattended=unattended
+                result, tr("Szablon „{name}”").format(name=current.name), unattended=unattended,
+                quiet=live,
             )
             if result.ok and current.offsite_enabled and current.offsite:
                 # po lokalnej kopii — ten sam łańcuch co inspekcja → kopia
@@ -2074,6 +2108,7 @@ class MainWindow(QMainWindow):
             done,
             tr("szablon {name}").format(name=template.name),
             unattended=unattended,
+            live=live,
         )
 
     def _require_template(self) -> bool:
@@ -2567,6 +2602,14 @@ class MainWindow(QMainWindow):
     def _on_job_failed(self, panel: OperationPanel, message: str) -> None:
         self._after_worker = None
         panel.set_busy(False)
+        live_id, self._live_run = self._live_run, None
+        service = getattr(self, "scheduler_service", None)
+        if live_id and service is not None:
+            if isinstance(self._last_error, engine.MassChangeDetected):
+                # nie ponawiamy co kilka minut — czekamy na człowieka (ręczna kopia zwalnia)
+                service.live_tracker.hold(live_id)
+            else:
+                service.live_tracker.finished(live_id, False)
         if isinstance(self._last_error, engine.MassChangeDetected):
             self._handle_mass_change(panel, self._last_error)
             return
@@ -2605,7 +2648,8 @@ class MainWindow(QMainWindow):
             self._set_status(tr("Przerywanie operacji…"))
 
     def _report_result(
-        self, result: engine.OperationResult, title: str, hint: str = "", unattended: bool = False
+        self, result: engine.OperationResult, title: str, hint: str = "", unattended: bool = False,
+        quiet: bool = False,
     ) -> None:
         self._set_status(result.summary)
         if self._closing:
@@ -2613,6 +2657,8 @@ class MainWindow(QMainWindow):
         if unattended:
             if result.cancelled:
                 return  # przerwanie (np. wyłączanie komputera) — kopia dokończy się później
+            if result.ok and quiet:
+                return  # dogrywka „na bieżąco” — powiadomienie co kilka minut byłoby szumem
             if result.ok:
                 self._notify(tr("{title} — gotowe").format(title=title), result.summary)
             else:
@@ -2713,7 +2759,9 @@ class MainWindow(QMainWindow):
         template.last_attempt = time.time()
         self.store.put_template(template)
         log.info("Kopia planowa „%s” (%s).", template.name, reason)
-        self._run_template_now(template, unattended=True)
+        # „Na bieżąco”: każda kopia z harmonogramu (zmiany albo podłączenie dysku)
+        # dogrywa do dzisiejszej wersji zamiast tworzyć nową (cleanvault/live.py).
+        self._run_template_now(template, unattended=True, live=template.schedule == scheduler.LIVE)
 
     def _backup_from_tray(self, template_id: str) -> None:
         template = self.store.get_template(template_id)

@@ -9,6 +9,7 @@ keyring==25.7.0          # Menedżer poświadczeń Windows dla zapamiętanych ha
 fastcdc==1.7.0           # zapis różnicowy dużych plików: podział FastCDC (rozszerzenie w C)
 click==8.5.0             # wymagany przez fastcdc przy imporcie (jego narzędzie wiersza poleceń)
 py_ecc==8.0.0            # krzywa BLS12-381 dla kapsuły czasu (IBE jak drand/tlock); sam rdzeń, bez py_ecc.bls
+watchdog==6.0.0          # kopia „na bieżąco”: zmiany w folderach źródłowych (ReadDirectoryChangesW)
 # start przy logowaniu w wersji ze Sklepu (API StartupTask pakietu MSIX)
 winrt-runtime==3.2.1; sys_platform == "win32"
 winrt-Windows.ApplicationModel==3.2.1; sys_platform == "win32"

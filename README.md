@@ -27,6 +27,7 @@ optional and send nothing but hashes.
 | **Browse without restoring** | Open any version like a folder, open or save a single file (also from an encrypted backup), see in which versions a file changed, search by name. |
 | **Restore** | Everything, one folder, or files back to their original locations, with a chosen policy for name conflicts. |
 | **Scheduled backups** | Daily at a set time or when the backup drive is connected; runs in the background and starts with Windows. |
+| **Live backup** | Watches the source folders and tops up today's version a few minutes after you save; when the backup drive is connected, it catches up at once. One version per day — with timestamps, closed by a seal the next day, and never changed after that. |
 | **Retention** | All versions, the last N, or a calendar (newest per day / week / month). Incomplete versions are never deleted. |
 | **Ransomware tripwire** | When many files suddenly look encrypted or get a foreign extension, the backup pauses and asks before writing — good versions are not overwritten. |
 | **Locked files** | Files held open by another program are retried at the end and reported with the name of the program holding them. |

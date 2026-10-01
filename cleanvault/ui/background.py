@@ -9,7 +9,9 @@ może oddać tej pracy Harmonogramowi Windows. Stąd trzy elementy:
   i kończy się;
 * :class:`Tray` — ikona przy zegarze z menu i powiadomieniami;
 * :class:`SchedulerService` — co pół minuty pyta :mod:`cleanvault.scheduler`,
-  czy coś trzeba uruchomić. Samego uruchomienia nie robi: zgłasza to oknu.
+  czy coś trzeba uruchomić, a dla szablonów „na bieżąco” także
+  :mod:`cleanvault.live` (zmiany w źródłach). Samego uruchomienia nie robi:
+  zgłasza to oknu.
 """
 
 from __future__ import annotations
@@ -22,7 +24,7 @@ from PySide6.QtGui import QAction, QIcon
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from PySide6.QtWidgets import QMenu, QSystemTrayIcon
 
-from .. import scheduler
+from .. import live, scheduler
 from ..i18n import tr
 from ..log import get_logger
 from ..state import StateStore
@@ -209,6 +211,9 @@ class SchedulerService(QObject):
         self.store = store
         self._seen: dict[str, bool] = {}
         self._reminded: dict[str, float] = {}
+        #: „na bieżąco”: zgłoszone zmiany i decyzja, kiedy dograć; obserwator folderów
+        self.live_tracker = live.ChangeTracker()
+        self.live_watcher = live.LiveWatcher(self.live_tracker)
         self._timer = QTimer(self)
         self._timer.setInterval(tick_ms)
         self._timer.timeout.connect(self.check)
@@ -235,6 +240,7 @@ class SchedulerService(QObject):
     def stop(self) -> None:
         self._timer.stop()
         self._first.stop()
+        self.live_watcher.stop()
 
     def has_schedules(self) -> bool:
         return any(t.schedule != scheduler.MANUAL for t in self.store.templates().values())
@@ -244,8 +250,9 @@ class SchedulerService(QObject):
         templates = list(self.store.templates().values())
         found = [] if self.paused else scheduler.due_templates(templates, moment, seen=self._seen)
         for template in templates:
-            if template.schedule == scheduler.ON_CONNECT:
+            if template.schedule in (scheduler.ON_CONNECT, scheduler.LIVE):
                 self._seen[template.id] = scheduler.destination_available(template.destination)
+        found += self._live_due(templates, moment, {item.template_id for item in found})
         for item in found:
             log.info("Termin kopii: %s (%s)", item.template_id, item.reason)
             self.due.emit(item.template_id, item.reason)
@@ -255,3 +262,25 @@ class SchedulerService(QObject):
                 self._reminded[template.id] = moment
                 self.overdue.emit(template.id)
         return found
+
+    def _live_due(self, templates: list, moment: float, already: set[str]) -> list[scheduler.Due]:
+        """Szablony „na bieżąco”, w których źródłach zmiany zdążyły się uspokoić."""
+        current = [t for t in templates if t.schedule == scheduler.LIVE]
+        self.live_watcher.update(current)
+        if self.paused:
+            return []
+        due = []
+        for template in current:
+            if template.id in already:
+                continue
+            if template.id in self.live_watcher.unwatched:
+                # bez obserwatora (dysk sieciowy, brak biblioteki): dogrywka co kwadrans
+                last = max(self.live_tracker.last_run(template.id), template.last_attempt or 0.0)
+                if moment - last >= live.FALLBACK_INTERVAL:
+                    self.live_tracker.note(template.id, moment - live.QUIET_SECONDS)
+            if self.live_tracker.ready(template.id, moment) and scheduler.destination_available(
+                template.destination
+            ):
+                log.info("Na bieżąco: dogrywka „%s”.", template.name)
+                due.append(scheduler.Due(template.id, "live"))
+        return due

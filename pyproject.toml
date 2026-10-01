@@ -13,6 +13,7 @@ dependencies = [
     "fastcdc>=1.7",
     "click>=8.0",
     "py_ecc>=8.0",
+    "watchdog>=6.0",
     "winrt-runtime>=3.2; sys_platform == 'win32'",
     "winrt-Windows.ApplicationModel>=3.2; sys_platform == 'win32'",
     "winrt-Windows.Foundation>=3.2; sys_platform == 'win32'",

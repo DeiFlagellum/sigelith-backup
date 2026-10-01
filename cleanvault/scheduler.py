@@ -31,13 +31,18 @@ from .state import Template
 MANUAL = "manual"
 DAILY = "daily"
 ON_CONNECT = "on_connect"
-SCHEDULES = (MANUAL, DAILY, ON_CONNECT)
+#: „Na bieżąco”: zmiany w źródłach dogrywane kilka minut po zapisie, a po podłączeniu
+#: dysku z kopią — od razu (patrz :mod:`cleanvault.live`).
+LIVE = "live"
+SCHEDULES = (MANUAL, DAILY, ON_CONNECT, LIVE)
 
 DEFAULT_TIME = "20:00"
 _DEFAULT_CLOCK = (20, 0)
 #: „Po podłączeniu dysku” — najwyżej raz na tyle sekund. Dysk odłączony
 #: i podłączony po godzinie nie powinien wywoływać drugiej pełnej kopii.
 ON_CONNECT_MIN_GAP = 12 * 3600
+#: „Na bieżąco” po podłączeniu dysku — najwyżej raz na tyle sekund.
+LIVE_CONNECT_GAP = 10 * 60
 #: Po tylu dniach bez udanej kopii program przypomina o zaległości.
 OVERDUE_AFTER = 7 * 24 * 3600
 
@@ -123,11 +128,13 @@ def due_templates(
             if (template.last_attempt or 0.0) < slot and available(template.destination):
                 late = now - slot > 15 * 60
                 result.append(Due(template.id, "missed" if late else "daily"))
-        elif template.schedule == ON_CONNECT:
+        elif template.schedule in (ON_CONNECT, LIVE):
             connected_now = available(template.destination)
             was_connected = seen.get(template.id)
             appeared = connected_now and was_connected is not True
-            if appeared and now - (template.last_attempt or 0.0) >= ON_CONNECT_MIN_GAP:
+            # „na bieżąco” synchronizuje po każdym podłączeniu — dogrywka jest tania
+            gap = LIVE_CONNECT_GAP if template.schedule == LIVE else ON_CONNECT_MIN_GAP
+            if appeared and now - (template.last_attempt or 0.0) >= gap:
                 result.append(Due(template.id, "connected"))
     return result
 

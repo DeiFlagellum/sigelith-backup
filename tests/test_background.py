@@ -344,6 +344,55 @@ def test_scheduled_backup_pauses_on_mass_change(qapp, window, tmp_path, no_dialo
     assert versions_after == versions_before, "przed decyzją nic nie może trafić do kopii"
 
 
+def _versions(tmp_path) -> list[str]:
+    return sorted(p.name for p in (tmp_path / "kopia").iterdir() if p.is_dir() and p.name[:4].isdigit())
+
+
+def test_live_runs_top_up_todays_version_quietly(qapp, window, tmp_path, no_dialogs):
+    """„Na bieżąco”: druga dogrywka trafia do tej samej, dzisiejszej wersji — bez nowej
+    nazwy i bez powiadomienia o sukcesie (byłoby co kilka minut)."""
+    tray = FakeTray()
+    window.tray = tray
+    template = _scheduled_template(tmp_path)
+    template.schedule = scheduler.LIVE
+    window.store.put_template(template)
+    window._run_scheduled(template.id, "live")
+    _wait_for_worker(qapp, window)
+    first = _versions(tmp_path)
+    assert len(first) == 1, first
+
+    source = Path(template.sources[0])
+    (source / "nowa umowa.txt").write_text("podpisana dziś", encoding="utf-8")
+    window._run_scheduled(template.id, "live")
+    _wait_for_worker(qapp, window)
+
+    assert _versions(tmp_path) == first, "jedna wersja na dzień, nazwa bez daty uzupełnienia"
+    assert (tmp_path / "kopia" / first[0] / "Dokumenty" / "nowa umowa.txt").is_file()
+    assert [m for m in tray.messages if not m[2]] == [], "udana dogrywka bez powiadomienia"
+    tracker = window.scheduler_service.live_tracker
+    assert tracker.last_run(template.id) > 0 and not tracker.held(template.id)
+
+
+def test_live_mode_waits_for_a_human_after_mass_changes(qapp, window, tmp_path, no_dialogs):
+    tray = FakeTray()
+    window.tray = tray
+    template, source = _encrypted_looking_source(tmp_path, window)
+    _wait_for_worker(qapp, window)
+    template = window.store.get_template(template.id)
+    template.schedule = scheduler.LIVE
+    window.store.put_template(template)
+    versions_before = _versions(tmp_path)
+    for path in sorted(source.glob("notatka*.txt"))[:150]:
+        path.write_bytes(os.urandom(4096))
+
+    window._run_scheduled(template.id, "live")
+    _wait_for_worker(qapp, window)
+
+    assert tray.messages and tray.messages[-1][2], "ostrzeżenie zamiast cichej dogrywki"
+    assert window.scheduler_service.live_tracker.held(template.id), "nie ponawiamy co kilka minut"
+    assert _versions(tmp_path) == versions_before
+
+
 def test_manual_backup_asks_and_continues_after_confirmation(qapp, window, tmp_path, monkeypatch):
     template, source = _encrypted_looking_source(tmp_path, window)
     _wait_for_worker(qapp, window)

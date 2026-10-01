@@ -55,6 +55,10 @@ hidden += collect_submodules("Cryptodome.Protocol")
 hidden += collect_submodules("winrt.windows.applicationmodel")
 hidden += collect_submodules("winrt.windows.foundation")
 hidden += collect_submodules("winrt.system")
+# Kopia „na bieżąco”: watchdog wybiera obserwatora systemu w czasie działania
+# (w Windows ReadDirectoryChangesW) — analiza statyczna go nie widzi.
+hidden += ["watchdog.observers.read_directory_changes", "watchdog.observers.winapi",
+           "watchdog.observers.polling"]
 
 excluded = [
     "tkinter",

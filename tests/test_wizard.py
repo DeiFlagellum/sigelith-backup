@@ -298,10 +298,27 @@ def test_manual_choice_means_no_schedule(qapp, store, folders):
     wizard._set_destination(str(destination))
     wizard._next()
     wizard._next()
-    wizard.when_group.button(2).setChecked(True)  # „ręcznie”
+    wizard.when_group.button(wizard._when_values.index(scheduler.MANUAL)).setChecked(True)
     wizard._next()
     wizard._finish(start_now=False)
     assert wizard.result_choice.template.schedule == scheduler.MANUAL
+
+
+def test_live_choice_keeps_the_backup_current(qapp, store, folders):
+    """„Na bieżąco” — zmiany dogrywane po zapisie i synchronizacja po podłączeniu dysku."""
+    source, destination = folders
+    wizard = SetupWizard(store)
+    wizard.purpose_group.button(2).setChecked(True)
+    wizard._set_sources([str(source)])
+    wizard._next()
+    wizard._set_destination(str(destination))
+    wizard._next()
+    wizard._next()
+    wizard.when_group.button(wizard._when_values.index(scheduler.LIVE)).setChecked(True)
+    wizard._next()
+    assert "na bieżąco" in wizard.summary_text.text()
+    wizard._finish(start_now=False)
+    assert wizard.result_choice.template.schedule == scheduler.LIVE
 
 
 def test_encrypted_schedule_remembers_the_password(qapp, store, folders, monkeypatch):

@@ -541,10 +541,13 @@ class SetupWizard(QDialog):
                     tr("Kopia sprzed miesiąca nie chroni tego, co zmieniło się od tamtej pory."))
         self.when_group = QButtonGroup(self)
         self.when_group.setExclusive(True)
-        self._when_values = [scheduler.DAILY, scheduler.ON_CONNECT, scheduler.MANUAL]
+        self._when_values = [scheduler.DAILY, scheduler.LIVE, scheduler.ON_CONNECT, scheduler.MANUAL]
         options = (
             (tr("Codziennie o wybranej godzinie (zalecane)"),
              tr("Jeśli komputer będzie wtedy wyłączony, kopia ruszy po jego włączeniu.")),
+            (tr("Na bieżąco — po każdej zmianie i po podłączeniu dysku"),
+             tr("Dla dysku podłączonego na stałe albo często: zmiany trafiają do kopii kilka minut "
+                "po zapisie, a po podłączeniu dysku kopia od razu się synchronizuje.")),
             (tr("Po podłączeniu dysku z kopią"),
              tr("Dla dysku USB podłączanego od czasu do czasu. Najwyżej jedna kopia na 12 godzin.")),
             (tr("Ręcznie — kiedy zechcę"),
@@ -634,6 +637,9 @@ class SetupWizard(QDialog):
                             "wyłączonym komputerze program nadrobi po jego włączeniu.").format(time=at))
         elif schedule == scheduler.ON_CONNECT:
             lines.append(tr("Kopia ruszy po podłączeniu dysku docelowego (najwyżej raz na 12 godzin)."))
+        elif schedule == scheduler.LIVE:
+            lines.append(tr("Kopia będzie na bieżąco: zmiany trafią do dzisiejszej wersji kilka minut "
+                            "po zapisie, a po podłączeniu dysku kopia od razu się zsynchronizuje."))
         else:
             lines.append(tr("Kopię uruchamiasz sam — przyciskiem w programie albo z menu ikony "
                             "przy zegarze."))
