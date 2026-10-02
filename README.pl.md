@@ -236,6 +236,10 @@ tools/                      ikona, pakiet MSIX, licencje składników, zrzuty do
 Warstwa silnika nie zna Qt — komunikuje się przez `engine.Reporter`, dzięki czemu
 da się ją testować bez GUI i wywołać z wątku roboczego.
 
+`cleanvault` to dawna robocza nazwa projektu. Zostaje w kodzie (pakiet `cleanvault`,
+`cleanvault.spec`), a dla zgodności z istniejącymi kopiami także w nazwach plików
+w katalogu kopii; sam program nazywa się Sigelith Backup.
+
 ---
 
 ## Migracja z wersji 1.x

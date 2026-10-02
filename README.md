@@ -129,6 +129,10 @@ tests/                  test suite
 tools/                  MSIX build, third-party notices, Store screenshots, benchmark
 ```
 
+`cleanvault` is the project's former working name. It stays in the code (the `cleanvault`
+package, `cleanvault.spec`) and, for compatibility with existing backups, in the file names
+in the backup folder; the program itself is called Sigelith Backup.
+
 ## License
 
 © 2025–2026 Adam Koch. **Free software under the GNU GPL, version 3 or (at your option)
