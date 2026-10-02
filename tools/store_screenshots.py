@@ -1,8 +1,10 @@
-"""Zrzuty ekranu do strony w Microsoft Store — po polsku i po angielsku.
+"""Zrzuty ekranu do strony w Microsoft Store — w każdym języku programu.
 
-Rysuje okno programu poza ekranem (Qt ``offscreen`` z czcionkami systemu) na
-przykładowych danych z ``build/store-screens`` i zapisuje pliki PNG 1600×1000
-(Sklep wymaga co najmniej 1366×768) do ``dist/store-screens/<język>/``.
+Rysuje okno programu bez pokazywania go na ekranie (``WA_DontShowOnScreen``, zwykły
+silnik czcionek Windows — platforma ``offscreen`` rozstrzelała tekst japoński, koreański
+i chiński) na przykładowych danych z ``build/store-screens`` i zapisuje pliki PNG
+1600×1000 (Sklep wymaga co najmniej 1366×768) do ``dist/store-screens/<język>/``.
+Ikona przy zegarze jest na czas zrzutów wyłączona.
 
 Ścieżki widoczne na zrzutach są podmieniane na neutralne (dysk D: i E:), żeby
 na stronie w Sklepie nie było nazwy konta ani katalogów autora.
@@ -21,8 +23,8 @@ import sys
 import time
 from pathlib import Path, PureWindowsPath
 
-os.environ["QT_QPA_PLATFORM"] = "offscreen"
-os.environ.setdefault("QT_QPA_FONTDIR", str(Path(os.environ.get("WINDIR", "C:/Windows")) / "Fonts"))
+#: 1 piksel obrazu = 1 piksel okna niezależnie od skalowania ekranu — zrzuty mają zawsze 1600×1000
+os.environ.setdefault("QT_ENABLE_HIGHDPI_SCALING", "0")
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -50,6 +52,88 @@ SAMPLES = {
         "changed": "Home budget.xlsx",
         "destination": "E:/Backups",
         "restored": "D:/Restored",
+    },
+    "de": {
+        "Dokumente": ["Verträge/2026/Mietvertrag.pdf", "Verträge/Nachtrag.pdf", "Rechnungen/RE-2026-09.pdf",
+                      "Rechnungen/RE-2026-08.pdf", "Haushaltsbudget.xlsx", "Besprechungsnotizen.docx"],
+        "Fotos": ["Urlaub 2026/IMG_0412.jpg", "Urlaub 2026/IMG_0413.jpg", "Geburtstag/IMG_0102.jpg"],
+        "template": "Dokumente und Fotos",
+        "changed": "Haushaltsbudget.xlsx",
+        "destination": "E:/Sicherungen",
+        "restored": "D:/Wiederhergestellt",
+    },
+    "es": {
+        "Documentos": ["Contratos/2026/Contrato de alquiler.pdf", "Contratos/Anexo.pdf", "Facturas/FAC-2026-09.pdf",
+                       "Facturas/FAC-2026-08.pdf", "Presupuesto familiar.xlsx", "Notas de la reunión.docx"],
+        "Fotos": ["Vacaciones 2026/IMG_0412.jpg", "Vacaciones 2026/IMG_0413.jpg", "Cumpleaños/IMG_0102.jpg"],
+        "template": "Documentos y fotos",
+        "changed": "Presupuesto familiar.xlsx",
+        "destination": "E:/Copias",
+        "restored": "D:/Restaurado",
+    },
+    "fr": {
+        "Documents": ["Contrats/2026/Bail.pdf", "Contrats/Avenant.pdf", "Factures/FAC-2026-09.pdf",
+                      "Factures/FAC-2026-08.pdf", "Budget familial.xlsx", "Notes de réunion.docx"],
+        "Photos": ["Vacances 2026/IMG_0412.jpg", "Vacances 2026/IMG_0413.jpg", "Anniversaire/IMG_0102.jpg"],
+        "template": "Documents et photos",
+        "changed": "Budget familial.xlsx",
+        "destination": "E:/Sauvegardes",
+        "restored": "D:/Restauré",
+    },
+    "ru": {
+        "Документы": ["Договоры/2026/Договор аренды.pdf", "Договоры/Дополнение.pdf", "Счета/Счёт-2026-09.pdf",
+                      "Счета/Счёт-2026-08.pdf", "Семейный бюджет.xlsx", "Заметки со встречи.docx"],
+        "Фото": ["Отпуск 2026/IMG_0412.jpg", "Отпуск 2026/IMG_0413.jpg", "День рождения/IMG_0102.jpg"],
+        "template": "Документы и фото",
+        "changed": "Семейный бюджет.xlsx",
+        "destination": "E:/Копии",
+        "restored": "D:/Восстановленное",
+    },
+    "tr": {
+        "Belgeler": ["Sözleşmeler/2026/Kira sözleşmesi.pdf", "Sözleşmeler/Ek protokol.pdf",
+                     "Faturalar/FT-2026-09.pdf", "Faturalar/FT-2026-08.pdf", "Ev bütçesi.xlsx",
+                     "Toplantı notları.docx"],
+        "Fotoğraflar": ["Tatil 2026/IMG_0412.jpg", "Tatil 2026/IMG_0413.jpg", "Doğum günü/IMG_0102.jpg"],
+        "template": "Belgeler ve fotoğraflar",
+        "changed": "Ev bütçesi.xlsx",
+        "destination": "E:/Yedekler",
+        "restored": "D:/Geri yüklenenler",
+    },
+    "ja": {
+        "ドキュメント": ["契約書/2026/賃貸契約書.pdf", "契約書/覚書.pdf", "請求書/INV-2026-09.pdf",
+                     "請求書/INV-2026-08.pdf", "家計簿.xlsx", "会議メモ.docx"],
+        "写真": ["旅行 2026/IMG_0412.jpg", "旅行 2026/IMG_0413.jpg", "誕生日/IMG_0102.jpg"],
+        "template": "ドキュメントと写真",
+        "changed": "家計簿.xlsx",
+        "destination": "E:/バックアップ",
+        "restored": "D:/復元",
+    },
+    "ko": {
+        "문서": ["계약서/2026/임대차 계약서.pdf", "계약서/부속 합의서.pdf", "청구서/INV-2026-09.pdf",
+               "청구서/INV-2026-08.pdf", "가계부.xlsx", "회의록.docx"],
+        "사진": ["여행 2026/IMG_0412.jpg", "여행 2026/IMG_0413.jpg", "생일/IMG_0102.jpg"],
+        "template": "문서와 사진",
+        "changed": "가계부.xlsx",
+        "destination": "E:/백업",
+        "restored": "D:/복원",
+    },
+    "zh": {
+        "文档": ["合同/2026/租赁合同.pdf", "合同/补充协议.pdf", "发票/INV-2026-09.pdf",
+               "发票/INV-2026-08.pdf", "家庭预算.xlsx", "会议记录.docx"],
+        "照片": ["2026 假期/IMG_0412.jpg", "2026 假期/IMG_0413.jpg", "生日/IMG_0102.jpg"],
+        "template": "文档和照片",
+        "changed": "家庭预算.xlsx",
+        "destination": "E:/备份",
+        "restored": "D:/已恢复",
+    },
+    "ar": {
+        "المستندات": ["العقود/2026/عقد الإيجار.pdf", "العقود/ملحق العقد.pdf", "الفواتير/INV-2026-09.pdf",
+                      "الفواتير/INV-2026-08.pdf", "ميزانية المنزل.xlsx", "ملاحظات الاجتماع.docx"],
+        "الصور": ["إجازة 2026/IMG_0412.jpg", "إجازة 2026/IMG_0413.jpg", "عيد الميلاد/IMG_0102.jpg"],
+        "template": "المستندات والصور",
+        "changed": "ميزانية المنزل.xlsx",
+        "destination": "E:/النسخ الاحتياطية",
+        "restored": "D:/المستعادة",
     },
 }
 
@@ -109,19 +193,32 @@ def _settle(app, seconds: float = 1.0) -> None:
 
 
 def shoot(language: str) -> list[Path]:
+    from PySide6.QtCore import Qt
     from PySide6.QtGui import QColor, QPainter
     from PySide6.QtWidgets import QApplication
 
-    from cleanvault import i18n, scheduler
+    from cleanvault.ui import main_window as main_window_module
+
+    # bez ikony przy zegarze — zrzuty nie mają nic pokazywać na pulpicie
+    main_window_module.Tray.available = staticmethod(lambda: False)
+
+    from cleanvault import i18n, scheduler, sigelith
     from cleanvault.state import StateStore, Template
+    from cleanvault.ui import qtlang
     from cleanvault.ui.main_window import MainWindow
     from cleanvault.ui.wizard import SetupWizard
+
+    # Folder danych Sigelith Desktop leży w profilu użytkownika — jego ścieżka (z nazwą
+    # konta) nie może trafić na zrzut. Pokazujemy neutralny folder z przykładową liczbą stempli.
+    sigelith.find_data_dir = lambda: Path("D:/Sigelith")
+    sigelith.load_stamps = lambda _folder: [None] * 18
 
     sources, destination, changed = _sample_data(language)
     _backups(sources, destination, changed)
     shown = _neutral(language)
 
     app = QApplication.instance() or QApplication([])
+    qtlang.apply(language)  # jak przy starcie programu: przyciski Qt i kierunek okna (arabski od prawej)
     store = StateStore(WORK / language / "state.msgpack")
     store.set_setting("language", language)
     store.set_setting("wizard_done", True)
@@ -137,6 +234,7 @@ def shoot(language: str) -> list[Path]:
         store.add_history({"action": "backup", "ok": True, "files": files, "at": now - days * 86400})
     i18n.set_language(language)
     window = MainWindow(store)
+    window.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
     window.resize(*SIZE)
     window.show()
     folder = OUT / language
@@ -194,6 +292,7 @@ def shoot(language: str) -> list[Path]:
     # sam kreator jest mniejszy niż minimum Sklepu (1366×768)
     window._go_to(MainWindow.PAGE_BACKUP)
     wizard = SetupWizard(store, window)
+    wizard.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen, True)
     wizard.resize(900, 700)
     wizard.show()
     wizard._show_step(2)

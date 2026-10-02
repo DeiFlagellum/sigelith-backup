@@ -3,9 +3,9 @@
 Versioned, optionally encrypted backups of your folders on an external drive — for
 Windows. Browse any version like a folder, restore just what you need, and recover
 your files even without this program. No account, no ads, no telemetry. Interface in
-English and Polish.
+11 languages — the same as Sigelith Desktop and sigelith.org.
 
-![version](https://img.shields.io/badge/version-3.0.0-f59e0b) ![license](https://img.shields.io/badge/license-GPL--3.0--or--later-blue) ![python](https://img.shields.io/badge/python-3.11%2B-blue) ![platform](https://img.shields.io/badge/Windows-10%20%7C%2011-0078d4)
+![version](https://img.shields.io/badge/version-3.0.0-ff5c39) ![license](https://img.shields.io/badge/license-GPL--3.0--or--later-blue) ![python](https://img.shields.io/badge/python-3.11%2B-blue) ![platform](https://img.shields.io/badge/Windows-10%20%7C%2011-0078d4)
 
 **Polski:** [README.pl.md](README.pl.md) · **Website:** <https://sigelith.org/backup/>
 
@@ -122,7 +122,7 @@ cleanvault/             engine (no Qt): scanning, manifest, copy, chunks, crypto
                         restore, retention, schedule, S3 off-site copy, Sigelith
                         timestamps, file proofs, audit, evidence store, time capsules
 cleanvault/ui/          PySide6 interface (wizard, browsing, background mode)
-cleanvault/locale/      translations (Polish in the code, English catalog)
+cleanvault/locale/      translations (Polish in the code, catalogs of the other 10 languages)
 assets/                 icons (Bootstrap Icons, MIT), recovery script, legal texts
 packaging/              MSIX manifest and license texts of bundled components
 tests/                  test suite

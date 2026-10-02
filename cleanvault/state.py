@@ -144,7 +144,7 @@ def _default_state() -> dict[str, Any]:
         "templates": {},
         "settings": {
             "theme": "dark",
-            "accent": "#f59e0b",
+            "accent": "#ff5c39",  # akcent marki Sigelith (ui/theme.py, BRAND_ACCENT)
             "confirm_before_overwrite": True,
             "verify_after_write": False,
             "show_hints": True,

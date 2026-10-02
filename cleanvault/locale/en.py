@@ -1823,4 +1823,6 @@ TEXTS: dict[str, str] = {
         'For a drive that is always or often connected: changes reach the backup a few minutes after they are saved, and when the drive is connected the backup catches up at once.',
     'Kopia będzie na bieżąco: zmiany trafią do dzisiejszej wersji kilka minut po zapisie, a po podłączeniu dysku kopia od razu się zsynchronizuje.':
         "The backup will stay current: changes go into today's version a few minutes after they are saved, and when the drive is connected the backup catches up at once.",
+    # opis bieżącej operacji w pasku stanu („Trwa: przywracanie…”)
+    "przywracanie": "restore",
 }

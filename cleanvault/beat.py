@@ -26,7 +26,7 @@ import math
 import time
 from datetime import UTC, datetime
 
-from .i18n import tr
+from .i18n import isolate, tr
 
 SECONDS_PER_DAY = 86_400
 BEATS_PER_DAY = 1_000
@@ -97,7 +97,8 @@ def describe(stamp_text: str) -> str:
     except ValueError:
         return stamp_text
     if clock.startswith("@"):
-        return f"{readable} {clock}"
+        # po arabsku „@921” obok daty czytałby się jako „921@” (i18n.isolate)
+        return f"{readable} {isolate(clock)}"
     try:
         return f"{readable} {time.strftime('%H:%M', time.strptime(clock, '%H-%M-%S'))}"
     except ValueError:

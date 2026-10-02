@@ -16,14 +16,15 @@ import sys
 from pathlib import Path
 
 from PySide6.QtCore import QBuffer, QByteArray, QPointF, QRectF, Qt
-from PySide6.QtGui import QBrush, QColor, QImage, QLinearGradient, QPainter, QPainterPath
+from PySide6.QtGui import QBrush, QColor, QImage, QPainter, QPainterPath
 from PySide6.QtWidgets import QApplication
 
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "assets"
-ACCENT = QColor("#f59e0b")
-DARK = QColor("#191c23")
-DARKER = QColor("#0f1116")
+#: Kafelek jak w Sigelith Desktop: akcent marki (ten sam co motyw programu, certyfikat
+#: i strona) i biały znak — obie aplikacje mają wyglądać jak jedna rodzina.
+ACCENT = QColor("#ff5c39")
+GLYPH = QColor("#ffffff")
 
 #: Rozmiary umieszczane w pliku .ico — Windows dobiera właściwy zależnie od widoku.
 ICO_SIZES = (16, 24, 32, 48, 64, 128, 256)
@@ -37,13 +38,11 @@ def render(size: int) -> QImage:
     painter.setRenderHint(QPainter.RenderHint.Antialiasing, True)
     s = size / 256.0  # wszystkie wymiary liczone dla kanwy 256 px
 
-    # Tło: zaokrąglony kwadrat z delikatnym gradientem.
-    background = QLinearGradient(QPointF(0, 0), QPointF(0, size))
-    background.setColorAt(0.0, DARK)
-    background.setColorAt(1.0, DARKER)
-    painter.setBrush(QBrush(background))
+    # Tło: kafelek w kolorze marki w proporcjach kafelka Sigelith Desktop
+    # (kwadrat 32..992 z 1024, promień rogów 204 — tu w jednostkach 256).
+    painter.setBrush(QBrush(ACCENT))
     painter.setPen(Qt.PenStyle.NoPen)
-    painter.drawRoundedRect(QRectF(0, 0, size, size), 56 * s, 56 * s)
+    painter.drawRoundedRect(QRectF(8 * s, 8 * s, 240 * s, 240 * s), 51 * s, 51 * s)
 
     # Tarcza — symbol ochrony danych.
     shield = QPainterPath()
@@ -55,7 +54,7 @@ def render(size: int) -> QImage:
     shield.lineTo(50 * s, 78 * s)
     shield.closeSubpath()
 
-    painter.setBrush(QBrush(ACCENT))
+    painter.setBrush(QBrush(GLYPH))
     painter.drawPath(shield)
 
     # Dziurka od klucza w kolorze tła. Celowo NIE wycinamy jej trybem Clear —
@@ -69,7 +68,7 @@ def render(size: int) -> QImage:
     stem.lineTo(133 * s, 174 * s)
     stem.lineTo(123 * s, 174 * s)
     stem.closeSubpath()
-    painter.fillPath(keyhole.united(stem), QBrush(DARK))
+    painter.fillPath(keyhole.united(stem), QBrush(ACCENT))
 
     painter.end()
     return image

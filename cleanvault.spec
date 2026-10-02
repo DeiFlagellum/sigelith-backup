@@ -152,9 +152,12 @@ QT_KEEP_PLUGINS = {
     "pyside6/plugins/imageformats/qico.dll",
 }
 QT_UNUSED_LIBRARIES = ("qt6virtualkeyboard", "qt6pdf", "qt6qml", "qt6quick", "qt6opengl", "opengl32sw")
-#: Tłumaczenia Qt: przyciski okien standardowych („Tak”, „Nie”, „Anuluj”) po polsku.
-#: Wersja angielska tłumaczenia nie potrzebuje.
-QT_KEEP_TRANSLATIONS = {"pyside6/translations/qtbase_pl.qm"}
+#: Tłumaczenia Qt: przyciski okien standardowych („Tak”, „Nie”, „Anuluj”) w językach
+#: programu (cleanvault/i18n.py, LANGUAGES). Wersja angielska tłumaczenia nie potrzebuje.
+QT_KEEP_TRANSLATIONS = {
+    f"pyside6/translations/qtbase_{name}.qm"
+    for name in ("pl", "de", "es", "fr", "ru", "tr", "ja", "ko", "zh_cn", "ar")
+}
 
 
 def _unused_qt(entry) -> bool:

@@ -52,7 +52,12 @@ AUTHORITY = "https://sigelith.org"
 _DIGEST = re.compile(r"^[0-9a-f]{64}$")
 #: Sigelith Desktop w Microsoft Store (Store ID z Partner Center, sprawdzony 2026-09-30) i na stronie.
 STORE_PRODUCT_ID = "9N5XK65GTF33"
-WEB_PAGES = {"pl": "https://sigelith.org/pl/desktop/", "de": "https://sigelith.org/de/desktop/"}
+#: Strona Sigelith Desktop w języku programu (angielska pod WEB_PAGE); chiński na stronie to /zh-hans/.
+WEB_PAGES = {
+    code: f"https://sigelith.org/{prefix}/desktop/"
+    for code, prefix in (("pl", "pl"), ("de", "de"), ("es", "es"), ("fr", "fr"), ("ru", "ru"),
+                         ("tr", "tr"), ("ja", "ja"), ("ko", "ko"), ("zh", "zh-hans"), ("ar", "ar"))
+}
 WEB_PAGE = "https://sigelith.org/desktop/"
 #: Wpisy przeniesione ze starego TVS nie mają dowodu — to tylko archiwum.
 _LEGACY_SOURCE = "tvs-legacy"

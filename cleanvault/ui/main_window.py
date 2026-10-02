@@ -83,7 +83,7 @@ from .background import MSG_SHOW, SchedulerService, Tray
 from .browser import BrowserPage
 from .evidence_dialog import EvidenceDialog
 from .legal import LegalDialog, PrivacyDialog
-from .theme import build_stylesheet, palette_for
+from .theme import build_stylesheet, effective_accent, palette_for
 from .widgets import (
     Card,
     FlowLayout,
@@ -1598,8 +1598,8 @@ class MainWindow(QMainWindow):
         self._run_job(
             job,
             panel=self.restore_panel,
-            on_success=lambda r: (self.store.add_history({"action": "restore", "ok": r.ok, "files": r.files_done}), self._report_result(r, "Przywracanie")),
-            description="przywracanie",
+            on_success=lambda r: (self.store.add_history({"action": "restore", "ok": r.ok, "files": r.files_done}), self._report_result(r, tr("Przywracanie"))),
+            description=tr("przywracanie"),
             total_bytes=None,
         )
 
@@ -2395,7 +2395,7 @@ class MainWindow(QMainWindow):
         self._update_backup_readiness()
 
     def _pick_accent(self) -> None:
-        current = QColor(self.store.setting("accent", "#f59e0b"))
+        current = QColor(effective_accent(self.store.setting("accent")))
         chosen = QColorDialog.getColor(current, self, tr("Kolor wyróżnienia"))
         if chosen.isValid():
             self.store.set_setting("accent", chosen.name())
@@ -2408,7 +2408,7 @@ class MainWindow(QMainWindow):
 
     def _apply_theme(self) -> None:
         theme = self.store.setting("theme", "dark")
-        accent = self.store.setting("accent", "#f59e0b")
+        accent = effective_accent(self.store.setting("accent"))
         self.setStyleSheet(build_stylesheet(theme, accent))
         palette = palette_for(theme, accent)
         icons.repaint_all(self, palette)

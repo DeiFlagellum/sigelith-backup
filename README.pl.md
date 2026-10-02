@@ -3,9 +3,10 @@
 Kopie zapasowe folderów na dysk zewnętrzny — z historią wersji, szyfrowaniem
 AES-256-GCM i przywracaniem jednym kliknięciem. Bez konta i bez telemetrii:
 z internetem łączą się wyłącznie dwie funkcje, które trzeba samemu włączyć
-(kopia poza domem i znaczniki czasu Sigelith). Interfejs po polsku i angielsku.
+(kopia poza domem i znaczniki czasu Sigelith). Interfejs w 11 językach — tych samych
+co Sigelith Desktop i sigelith.org.
 
-![wersja](https://img.shields.io/badge/wersja-3.0.0-f59e0b) ![licencja](https://img.shields.io/badge/licencja-GPL--3.0--or--later-blue) ![python](https://img.shields.io/badge/python-3.11%2B-blue)
+![wersja](https://img.shields.io/badge/wersja-3.0.0-ff5c39) ![licencja](https://img.shields.io/badge/licencja-GPL--3.0--or--later-blue) ![python](https://img.shields.io/badge/python-3.11%2B-blue)
 
 **English:** [README.md](README.md) · **Strona:** <https://sigelith.org/backup/>
 
@@ -209,7 +210,7 @@ app.py                      punkt wejścia
 cleanvault/
   paths.py                  katalogi aplikacji, długie ścieżki, pakiet MSIX
   log.py                    logowanie do pliku i do panelu w GUI
-  i18n.py, locale/          tłumaczenia (polski w kodzie, angielski w katalogu)
+  i18n.py, locale/          tłumaczenia (polski w kodzie, katalogi 10 pozostałych języków)
   crypto.py                 AES-256-GCM ze strumieniowaniem, Argon2id
   state.py                  stan aplikacji (zapis atomowy, odzyskiwanie)
   snapshot.py               skanowanie drzewa, manifest kopii, dziennik punktów kontrolnych

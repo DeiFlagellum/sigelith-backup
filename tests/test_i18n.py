@@ -9,6 +9,8 @@ katalogu** i pilnuje, by nowy napis nie wśliznął się poza ``tr()``.
 from __future__ import annotations
 
 import ast
+import importlib
+import os
 import re
 from pathlib import Path
 
@@ -121,6 +123,84 @@ def test_date_formats_keep_their_directives():
     assert not mismatched, mismatched
 
 
+#: katalogi wszystkich języków poza źródłowym — te same języki co Sigelith Desktop i strona
+CATALOG_CODES = [code for code in i18n.LANGUAGES if code != i18n.SOURCE_LANGUAGE]
+#: litery, które występują tylko po polsku — w obcym katalogu znaczą nieprzetłumaczony tekst
+POLISH_ONLY = set("ąćęłńśźżĄĆĘŁŃŚŹŻ")
+
+
+def _texts_of(code: str) -> dict[str, str]:
+    return importlib.import_module(f"cleanvault.locale.{code}").TEXTS
+
+
+def test_languages_match_sigelith_desktop_and_the_website():
+    assert list(i18n.LANGUAGES) == ["pl", "en", "de", "es", "fr", "ru", "tr", "ja", "ko", "zh", "ar"]
+
+
+@pytest.mark.parametrize("code", CATALOG_CODES)
+def test_every_language_has_every_text(code, code_texts):
+    texts = _texts_of(code)
+    missing = sorted(set(code_texts) - set(texts))
+    stale = sorted(set(texts) - set(code_texts))
+    assert not missing, f"[{code}] brak tłumaczeń: {[t[:40] for t in missing[:10]]}"
+    assert not stale, f"[{code}] tłumaczenia bez odpowiednika w kodzie: {[t[:40] for t in stale[:10]]}"
+
+
+@pytest.mark.parametrize("code", CATALOG_CODES)
+def test_placeholders_and_dates_survive_in_every_language(code):
+    texts = _texts_of(code)
+    fields = [s for s, t in texts.items() if set(FIELD.findall(s)) != set(FIELD.findall(t))]
+    dates = [s for s, t in texts.items() if "%" in s and set(DIRECTIVE.findall(s)) != set(DIRECTIVE.findall(t))]
+    assert not fields, f"[{code}] zgubione pola: {[t[:50] for t in fields[:10]]}"
+    assert not dates, f"[{code}] zepsute formaty dat: {dates}"
+
+
+@pytest.mark.parametrize("code", [code for code in CATALOG_CODES if code != "en"])
+def test_no_polish_left_in_foreign_catalogs(code):
+    left = [
+        source for source, target in _texts_of(code).items()
+        if set(target) & POLISH_ONLY and not set(TEXTS[source]) & POLISH_ONLY
+    ]
+    assert not left, f"[{code}] polskie teksty w katalogu: {[t[:40] for t in left[:10]]}"
+
+
+@pytest.mark.parametrize(
+    ("code", "numbers", "forms"),
+    [
+        ("de", (0, 1, 2, 21), (1, 0, 1, 1)),
+        ("fr", (0, 1, 2, 21), (0, 0, 1, 1)),
+        ("ru", (1, 2, 5, 11, 12, 21, 22, 25, 112), (0, 1, 2, 2, 2, 0, 1, 2, 2)),
+        ("ar", (0, 1, 2, 3, 10, 11, 99, 100, 103), (2, 0, 1, 1, 1, 2, 2, 2, 1)),
+        ("ja", (0, 1, 2, 5), (0, 0, 0, 0)),
+        ("zh", (1, 7), (0, 0)),
+    ],
+)
+def test_plural_rules_follow_each_language(code, numbers, forms):
+    try:
+        i18n.set_language(code)
+        assert tuple(i18n._form_index(n) for n in numbers) == forms
+    finally:
+        i18n.set_language("pl")
+
+
+def test_arabic_turns_the_window_right_to_left():
+    os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import QApplication
+
+    from cleanvault.ui import qtlang
+
+    app = QApplication.instance() or QApplication([])
+    try:
+        assert i18n.is_rtl("ar") and not i18n.is_rtl("pl")
+        assert qtlang.apply("ar")
+        assert app.layoutDirection() == Qt.LayoutDirection.RightToLeft
+        assert qtlang.apply("zh")  # plik Qt nazywa się qtbase_zh_CN
+        assert app.layoutDirection() == Qt.LayoutDirection.LeftToRight
+    finally:
+        qtlang.apply("pl")
+
+
 def test_translation_switches_with_language():
     try:
         i18n.set_language("pl")
@@ -152,7 +232,9 @@ def test_english_plural_uses_two_forms():
         i18n.set_language("pl")
 
 
-def test_unknown_language_falls_back_to_source():
+def test_unknown_language_falls_back_to_the_system_language(monkeypatch):
+    """Ustawienie z językiem, którego ta wersja nie zna (np. z nowszej), nie psuje programu."""
+    monkeypatch.setenv("TVB_LANG", "pl_PL")
     try:
         assert i18n.set_language("kl") == "pl"
         assert i18n.tr("Uruchom kopię") == "Uruchom kopię"
@@ -166,9 +248,19 @@ def test_system_language_reads_the_environment(monkeypatch):
     monkeypatch.setenv("TVB_LANG", "pl_PL")
     assert i18n.system_language() == "pl"
     monkeypatch.setenv("TVB_LANG", "de_DE")
-    for name in ("LANGUAGE", "LC_ALL", "LANG"):
+    assert i18n.system_language() == "de"
+    monkeypatch.setenv("TVB_LANG", "zh-Hans-CN")
+    assert i18n.system_language() == "zh"
+
+
+def test_system_language_follows_the_windows_interface_and_defaults_to_english(monkeypatch):
+    """Liczy się język interfejsu Windows; języka spoza listy nie zastępujemy polskim."""
+    for name in ("TVB_LANG", "LANGUAGE", "LC_ALL", "LANG"):
         monkeypatch.delenv(name, raising=False)
-    assert i18n.system_language() in i18n.LANGUAGES
+    monkeypatch.setattr(i18n, "_system_languages", lambda: ["it", "ko", "pl"])
+    assert i18n.system_language() == "ko"
+    monkeypatch.setattr(i18n, "_system_languages", lambda: ["it", "nl"])
+    assert i18n.system_language() == "en"
 
 
 def _polish_outside_tr(source: str, name: str = "kod.py") -> list[str]:

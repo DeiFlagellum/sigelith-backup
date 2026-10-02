@@ -35,7 +35,7 @@ from pathlib import Path
 
 from . import beat, chunks, crypto, evidence, locks, proof, rescue, sigelith
 from .crypto import ENCRYPTED_SUFFIX, OperationCancelled, PasswordKeyring
-from .i18n import plural, tr
+from .i18n import isolate, plural, tr
 from .log import get_logger
 from .parallel import DirectoryCache, resolve_workers, unordered_map
 from .paths import (
@@ -363,9 +363,10 @@ def open_elsewhere(count: int) -> str:
 def human_size(num: float) -> str:
     for unit in ("B", "KB", "MB", "GB", "TB"):
         if abs(num) < 1024.0 or unit == "TB":
-            return f"{num:.0f} {unit}" if unit == "B" else f"{num:.1f} {unit}"
+            # po arabsku „4.0 KB” czytałoby się jako „KB 4.0” (i18n.isolate)
+            return isolate(f"{num:.0f} {unit}" if unit == "B" else f"{num:.1f} {unit}")
         num /= 1024.0
-    return f"{num:.1f} TB"
+    return isolate(f"{num:.1f} TB")
 
 
 # --------------------------------------------------------------------- kopia
