@@ -1,8 +1,8 @@
 # Pakiet MSIX i zgłoszenie do Microsoft Store
 
-Instrukcja dla wydawcy. Teksty do strony w Sklepie leżą w
-[`docs/sklep/opis-sklepu.md`](../../docs/sklep/opis-sklepu.md), polityka prywatności
-w [`assets/legal/polityka-prywatnosci.md`](../../assets/legal/polityka-prywatnosci.md).
+Instrukcja dla wydawcy. Karta w Sklepie (11 języków, CSV dla Partner Center) i zgłoszenie
+krok po kroku leżą w [`packaging/store/`](../store/README.md) ([`PUBLIKACJA.md`](../store/PUBLIKACJA.md)),
+polityka prywatności w [`assets/legal/polityka-prywatnosci.md`](../../assets/legal/polityka-prywatnosci.md).
 
 ## Wymagania
 
@@ -107,8 +107,8 @@ albo gdy do programu trafia biblioteka, której w nim nie ma. Po zmianie zależn
 
 **Warunki wstępne** (uzgodnione z projektem beattime 2026-09-29):
 
-* **Sigelith Desktop jest w Sklepie przed Sigelith Backup** — *czeka*: Sigelith Desktop
-  wysłano do certyfikacji 2026-09-30 (sesja beattime da znać po publikacji). Kreator wersji ze
+* ~~**Sigelith Desktop jest w Sklepie przed Sigelith Backup**~~ — *gotowe*: Sigelith Desktop
+  opublikowany 2026-10-01 (https://apps.microsoft.com/detail/9n5xk65gtf33). Kreator wersji ze
   Sklepu prowadzi przyciskiem „Poznaj Sigelith Desktop” wyłącznie do jego karty w Sklepie
   (`ms-windows-store://pdp/?productid=9N5XK65GTF33`, zasada 10.1.5).
 * ~~**Na sigelith.org są wdrożone**~~ — *gotowe, sprawdzone z zewnątrz 2026-09-29*: akapit
@@ -133,7 +133,8 @@ albo gdy do programu trafia biblioteka, której w nim nie ma. Po zmianie zależn
    ```
 
    (z nazwą dokładnie taką, jaką pokaże Product identity — co do znaku).
-4. **Pakiety**: prześlij `dist\SigelithBackup_3.0.0.0_x64.msix`. Każda kolejna
+4. **Pakiety**: prześlij `dist\sklep\SigelithBackup_3.0.0.0_x64.msix` (zbudowany z nazwą
+   ze Sklepu i odłożony osobno — `dist\` bez `sklep\` to wersja testowa). Każda kolejna
    wersja musi mieć wyższy numer (`cleanvault/__init__.py` i `pyproject.toml`).
 5. **Właściwości**: kategoria *Narzędzia i programy użytkowe* → *Kopie zapasowe
    i zarządzanie*.
@@ -153,8 +154,9 @@ albo gdy do programu trafia biblioteka, której w nim nie ma. Po zmianie zależn
      ze skrótem; opisuje to polityka Sigelith. Bez reklam i zakupów w aplikacji.
 6. **Klasyfikacja wiekowa**: ankieta IARC — program nie zawiera treści
    z pytań ankiety, nie udostępnia komunikacji między użytkownikami ani zakupów.
-7. **Strona w Sklepie** (polski i angielski — pakiet deklaruje oba języki): teksty
-   z `docs/sklep/opis-sklepu.md`, zrzuty ekranu (minimum 1366×768) —
-   `tools/store_screenshots.py` robi je w obu językach.
-8. **Uwagi dla certyfikacji** — gotowy tekst w `docs/sklep/opis-sklepu.md`.
+7. **Strona w Sklepie** (11 języków — tyle deklaruje pakiet): `packaging/store/listing.json`
+   wpisywany do eksportu z Partner Center przez `packaging/store/fill_listing_csv.py`; zrzuty
+   ekranu (1600×1000) — `tools/store_screenshots.py` robi je we wszystkich językach.
+8. **Uwagi dla certyfikacji** i uzasadnienie `runFullTrust` (pola do 500 znaków) — gotowe
+   teksty w `packaging/store/PUBLIKACJA.md`.
 9. Cena i dostępność — decyzja wydawcy.

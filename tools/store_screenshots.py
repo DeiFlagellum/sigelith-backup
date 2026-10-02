@@ -228,6 +228,8 @@ def shoot(language: str) -> list[Path]:
                         gfs_daily=7, gfs_weekly=4, gfs_monthly=12, retention=0, encrypt=True)
     now = time.time()
     template.last_attempt = template.last_success = now - 86400
+    # zgodnie z „Ostatnimi operacjami” niżej: utworzony przed pierwszą kopią, ostatnio wczoraj
+    template.created, template.last_run = now - 3 * 86400 - 3600, now - 86400
     scheduler.arm(template)  # termin dziś już „widziany” — harmonogram nie ruszy kopii w trakcie zrzutów
     store.put_template(template)
     for days, files in ((3, 1240), (2, 17), (1, 42)):  # kilka wpisów w „Ostatnich operacjach”

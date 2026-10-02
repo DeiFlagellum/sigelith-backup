@@ -3,3 +3,5 @@
 # robocze do Sklepu oraz plik obszaru roboczego VS Code.
 docs export-ignore
 workspace.code-workspace export-ignore
+packaging/store export-ignore
+tests/test_store_listing.py export-ignore
