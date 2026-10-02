@@ -50,9 +50,9 @@ Dane dostępowe do usługi przechowuje Menedżer poświadczeń Windows. Wydawca 
 tych danych; przetwarzanie przez dostawcę usługi reguluje jego polityka prywatności.
 
 **Znaczniki czasu Sigelith** (dawniej BeatTime). Gdy włączysz tę opcję, po każdej
-kopii program wysyła do usługi Sigelith (https://sigelith.org) skrót SHA-256 spisu
-plików danej wersji — 64 znaki, z których nie da się odtworzyć nazw ani treści
-plików. Skrót trafia do publicznego rejestru usługi; na tym polega dowód, że wersja
+kopii program wysyła do usługi Sigelith (https://sigelith.org) skrót SHA-256 pieczęci
+danej wersji (krótkiego oświadczenia ze skrótem spisu plików i korzeniem drzewa plików)
+— 64 znaki, z których nie da się odtworzyć nazw ani treści plików. Skrót trafia do publicznego rejestru usługi; na tym polega dowód, że wersja
 istniała w danej chwili. Usługę prowadzi ten sam wydawca; jak przy każdym połączeniu
 internetowym widzi on adres IP komputera. Szczegóły, podstawy prawne i okresy
 przechowywania: polityka prywatności Sigelith — https://sigelith.org/privacy/
@@ -117,7 +117,8 @@ The service credentials are kept by the Windows Credential Manager. The publishe
 not receive this data; the service provider's own privacy policy governs its processing.
 
 **Sigelith timestamps** (formerly BeatTime). When you turn this option on, after each
-backup the program sends a SHA-256 digest of that version's file list to the Sigelith
+backup the program sends a SHA-256 digest of that version's seal (a short statement with
+the digest of its file list and the root of its file tree) to the Sigelith
 service (https://sigelith.org) — 64 characters from which neither file names nor
 contents can be recovered. The digest is added to the service's public log; that is
 what proves the version existed at a given moment. The service is run by the same
