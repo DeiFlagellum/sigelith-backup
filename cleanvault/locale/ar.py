@@ -920,8 +920,8 @@ TEXTS: dict[str, str] = {
         'ملفاتك الشخصية من مجلدات المستخدم. الخيار الأكثر شيوعًا.',
     'Uruchamia kreator, który ustawi kopię krok po kroku':
         'يشغّل المعالج الذي يُعدّ النسخ الاحتياطي خطوة بخطوة',
-    'Uruchom kreator…':
-        'تشغيل المعالج…',
+    'Nowa kopia krok po kroku…':
+        'نسخة احتياطية جديدة خطوة بخطوة…',
     'Ustawia kopię krok po kroku i zapisuje ją jako szablon':
         'يُعدّ النسخ الاحتياطي خطوة بخطوة ويحفظه كقالب',
     'Ustawienia pierwszej kopii':
@@ -1882,4 +1882,6 @@ TEXTS: dict[str, str] = {
         'ستبقى النسخة الاحتياطية محدَّثة أولًا بأول: تدخل التغييرات إصدار اليوم بعد حفظها ببضع دقائق، وعند توصيل القرص تُزامَن النسخة الاحتياطية فورًا.',
     'przywracanie':
         'الاستعادة',
+    'Nowa kopia krok po kroku':
+        'نسخة احتياطية جديدة خطوة بخطوة',
 }

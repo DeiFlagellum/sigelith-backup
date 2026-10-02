@@ -920,8 +920,8 @@ TEXTS: dict[str, str] = {
         'Vos fichiers personnels, dans vos dossiers utilisateur. Le choix le plus courant.',
     'Uruchamia kreator, który ustawi kopię krok po kroku':
         'Lance l’assistant, qui configure la sauvegarde étape par étape',
-    'Uruchom kreator…':
-        'Lancer l’assistant…',
+    'Nowa kopia krok po kroku…':
+        'Nouvelle sauvegarde étape par étape…',
     'Ustawia kopię krok po kroku i zapisuje ją jako szablon':
         'Configure la sauvegarde étape par étape et l’enregistre comme modèle',
     'Ustawienia pierwszej kopii':
@@ -1882,4 +1882,6 @@ TEXTS: dict[str, str] = {
         'La sauvegarde sera tenue à jour en continu\xa0: les modifications rejoindront la version du jour quelques minutes après leur enregistrement, et au branchement du disque, la sauvegarde se synchronisera aussitôt.',
     'przywracanie':
         'restauration',
+    'Nowa kopia krok po kroku':
+        'Nouvelle sauvegarde étape par étape',
 }

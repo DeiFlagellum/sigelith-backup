@@ -920,8 +920,8 @@ TEXTS: dict[str, str] = {
         'Kullanıcı klasörlerinizdeki kişisel dosyalarınız. En sık yapılan seçim.',
     'Uruchamia kreator, który ustawi kopię krok po kroku':
         'Yedeği adım adım ayarlayan sihirbazı başlatır',
-    'Uruchom kreator…':
-        'Sihirbazı başlat…',
+    'Nowa kopia krok po kroku…':
+        'Adım adım yeni yedek…',
     'Ustawia kopię krok po kroku i zapisuje ją jako szablon':
         'Yedeği adım adım ayarlar ve şablon olarak kaydeder',
     'Ustawienia pierwszej kopii':
@@ -1882,4 +1882,6 @@ TEXTS: dict[str, str] = {
         'Yedek sürekli güncel kalacak: değişiklikler kaydedildikten birkaç dakika sonra bugünkü sürüme eklenecek; sürücü bağlandığında da yedek hemen eşitlenecek.',
     'przywracanie':
         'geri yükleme',
+    'Nowa kopia krok po kroku':
+        'Adım adım yeni yedek',
 }

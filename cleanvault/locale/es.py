@@ -920,8 +920,8 @@ TEXTS: dict[str, str] = {
         'Tus archivos personales de las carpetas de usuario. La opción más habitual.',
     'Uruchamia kreator, który ustawi kopię krok po kroku':
         'Inicia el asistente, que configura la copia paso a paso',
-    'Uruchom kreator…':
-        'Abrir el asistente…',
+    'Nowa kopia krok po kroku…':
+        'Nueva copia paso a paso…',
     'Ustawia kopię krok po kroku i zapisuje ją jako szablon':
         'Configura la copia paso a paso y la guarda como plantilla',
     'Ustawienia pierwszej kopii':
@@ -1882,4 +1882,6 @@ TEXTS: dict[str, str] = {
         'La copia estará siempre al día: los cambios llegarán a la versión de hoy unos minutos después de guardarse, y al conectar el disco la copia se sincronizará enseguida.',
     'przywracanie':
         'restauración',
+    'Nowa kopia krok po kroku':
+        'Nueva copia paso a paso',
 }

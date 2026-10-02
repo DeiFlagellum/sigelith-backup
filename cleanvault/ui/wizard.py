@@ -207,7 +207,10 @@ class SetupWizard(QDialog):
         # a pasek nawigacji powstaje po nich — do tego czasu nie ma czego odświeżać.
         self._ready = False
 
-        self.setWindowTitle(tr("Ustawienia pierwszej kopii"))
+        # Przy pierwszym uruchomieniu to pierwsza kopia; z ekranu kopii albo z listy
+        # szablonów kreator zakłada kolejną — tytuł nie może wtedy mówić o pierwszej.
+        title = tr("Ustawienia pierwszej kopii") if not store.templates() else tr("Nowa kopia krok po kroku")
+        self.setWindowTitle(title)
         self.setMinimumSize(820, 640)
         # Na zwykłym monitorze cały krok mieści się bez przewijania (także karta Sigelith
         # na dole pierwszego kroku); na małym laptopie zostaje minimum i przewijanie.
@@ -220,7 +223,7 @@ class SetupWizard(QDialog):
         layout.setContentsMargins(26, 24, 26, 20)
         layout.setSpacing(14)
 
-        self.header = page_title(tr("Ustawienia pierwszej kopii"), "")
+        self.header = page_title(title, "")
         layout.addWidget(self.header)
 
         self.steps = QStackedWidget()

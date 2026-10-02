@@ -920,8 +920,8 @@ TEXTS: dict[str, str] = {
         '用户文件夹中的个人文件。最常见的选择。',
     'Uruchamia kreator, który ustawi kopię krok po kroku':
         '启动向导，逐步设置备份',
-    'Uruchom kreator…':
-        '运行向导…',
+    'Nowa kopia krok po kroku…':
+        '逐步设置新备份…',
     'Ustawia kopię krok po kroku i zapisuje ją jako szablon':
         '逐步设置备份，并将其保存为模板',
     'Ustawienia pierwszej kopii':
@@ -1882,4 +1882,6 @@ TEXTS: dict[str, str] = {
         '备份将实时更新：更改会在保存几分钟后写入当天的版本；连接驱动器后，备份会立即同步。',
     'przywracanie':
         '恢复',
+    'Nowa kopia krok po kroku':
+        '逐步设置新备份',
 }

@@ -920,8 +920,8 @@ TEXTS: dict[str, str] = {
         'Deine persönlichen Dateien aus deinen Benutzerordnern. Die häufigste Wahl.',
     'Uruchamia kreator, który ustawi kopię krok po kroku':
         'Startet den Assistenten, der die Sicherung Schritt für Schritt einrichtet',
-    'Uruchom kreator…':
-        'Assistent starten…',
+    'Nowa kopia krok po kroku…':
+        'Neue Sicherung Schritt für Schritt…',
     'Ustawia kopię krok po kroku i zapisuje ją jako szablon':
         'Richtet die Sicherung Schritt für Schritt ein und speichert sie als Vorlage',
     'Ustawienia pierwszej kopii':
@@ -1882,4 +1882,6 @@ TEXTS: dict[str, str] = {
         'Die Sicherung bleibt laufend aktuell: Änderungen kommen wenige Minuten nach dem Speichern in die heutige Version, und beim Anschließen des Laufwerks wird die Sicherung sofort synchronisiert.',
     'przywracanie':
         'Wiederherstellung',
+    'Nowa kopia krok po kroku':
+        'Neue Sicherung Schritt für Schritt',
 }

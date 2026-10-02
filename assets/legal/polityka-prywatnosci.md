@@ -12,7 +12,7 @@ nośnikach. Z internetem łączą się wyłącznie dwie funkcje, które musisz s
 
 ### Administrator
 
-Adam Koch (jednoosobowa działalność gospodarcza), Weißensteinstr. 44, 58093 Hagen,
+Adam Koch, Weißensteinstr. 44, 58093 Hagen,
 Niemcy · e-mail: kontakt@advena-partners.com · Impressum:
 https://sigelith.org/de/impressum/
 
@@ -79,7 +79,7 @@ choose. Only two features connect to the internet, and only if you turn them on.
 
 ### Controller
 
-Adam Koch (sole proprietor), Weißensteinstr. 44, 58093 Hagen, Germany ·
+Adam Koch, Weißensteinstr. 44, 58093 Hagen, Germany ·
 e-mail: kontakt@advena-partners.com · legal notice (Impressum):
 https://sigelith.org/de/impressum/
 

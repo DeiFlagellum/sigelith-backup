@@ -390,13 +390,13 @@ def test_windows_shutdown_stops_backup_without_asking(window, monkeypatch):
 
 def test_saving_template_with_existing_name_replaces_it(window, tmp_path, monkeypatch):
     """Zmienione ustawienia muszą dać się wprowadzić do istniejącego szablonu."""
-    from PySide6.QtWidgets import QInputDialog, QMessageBox
+    from PySide6.QtWidgets import QMessageBox
 
     source = tmp_path / "dane"
     source.mkdir()
     window.source_list.add_path(str(source))
     window.dest_picker.set_path(str(tmp_path / "kopia"))
-    monkeypatch.setattr(QInputDialog, "getText", lambda *a, **k: ("Kopia Repo+Privat", True))
+    monkeypatch.setattr(window, "_ask_template_settings", lambda _suggested: ("Kopia Repo+Privat", "manual", "20:00"))
     monkeypatch.setattr(QMessageBox, "question", lambda *a, **k: QMessageBox.StandardButton.Yes)
 
     window.verify_cb.setChecked(True)
@@ -422,7 +422,7 @@ def test_default_excludes_keep_git_history_but_skip_environments():
 
 def test_update_stamp_switch_reaches_config_and_template(window, tmp_path, monkeypatch):
     """Przełącznik daty uzupełnienia w nazwie katalogu trafia do ustawień i do szablonu."""
-    from PySide6.QtWidgets import QInputDialog, QMessageBox
+    from PySide6.QtWidgets import QMessageBox
 
     source = tmp_path / "dane"
     source.mkdir()
@@ -434,7 +434,7 @@ def test_update_stamp_switch_reaches_config_and_template(window, tmp_path, monke
     window.stamp_updates_cb.setChecked(False)
     assert window._current_config().stamp_updates is False
 
-    monkeypatch.setattr(QInputDialog, "getText", lambda *a, **k: ("Bez stempla", True))
+    monkeypatch.setattr(window, "_ask_template_settings", lambda _suggested: ("Bez stempla", "manual", "20:00"))
     monkeypatch.setattr(QMessageBox, "question", lambda *a, **k: QMessageBox.StandardButton.Yes)
     window._save_as_template()
     template = next(iter(window.store.templates().values()))
@@ -506,4 +506,49 @@ def test_language_switch_rebuilds_window_and_keeps_the_form(window, tmp_path):
     finally:
         window.language_combo.setCurrentIndex(window.language_combo.findData("pl"))
     assert window.run_btn.text().strip() == "Uruchom kopię"
+
+
+def test_wizard_is_offered_where_backups_are_made_not_in_settings(window):
+    """Kreator zakłada kopię — jest na ekranie kopii i na liście szablonów, nie w Ustawieniach."""
+
+    def wizard_buttons(page_index):
+        page = window.stack.widget(page_index)
+        return [b for b in page.findChildren(QPushButton) if b.text().strip() == "Nowa kopia krok po kroku…"]
+
+    assert wizard_buttons(MainWindow.PAGE_BACKUP)
+    assert wizard_buttons(MainWindow.PAGE_TEMPLATES)
+    assert not wizard_buttons(MainWindow.PAGE_SETTINGS)
+
+
+def test_template_dialog_offers_the_schedule_of_the_template_it_replaces(qapp):
+    """Zapis pod nazwą istniejącego szablonu nie kasuje jego harmonogramu."""
+    from cleanvault import scheduler
+    from cleanvault.state import Template
+    from cleanvault.ui.template_dialog import TemplateDialog
+
+    existing = Template(name="Dom", schedule=scheduler.DAILY, schedule_time="06:30")
+    dialog = TemplateDialog([existing], "Kopia dokumentów")
+    assert dialog.values() == ("Kopia dokumentów", scheduler.MANUAL, "20:00")
+    assert not dialog.time_edit.isEnabled(), "godzina tylko przy kopii codziennej"
+    dialog.name_edit.setText("Dom")
+    assert dialog.values() == ("Dom", scheduler.DAILY, "06:30")
+    assert dialog.time_edit.isEnabled()
+    dialog.close()
+
+
+def test_saving_a_template_sets_its_automatic_backup(window, tmp_path, monkeypatch):
+    """Harmonogram wybiera się w oknie zapisu — bez szukania go na liście szablonów."""
+    from cleanvault import scheduler
+
+    source = tmp_path / "dane"
+    source.mkdir()
+    window.source_list.add_path(str(source))
+    window.dest_picker.set_path(str(tmp_path / "kopia"))
+    autostart = []
+    monkeypatch.setattr(window, "_ensure_autostart", lambda: autostart.append(True))
+    monkeypatch.setattr(window, "_ask_template_settings", lambda _suggested: ("Codzienna", scheduler.DAILY, "07:15"))
+    window._save_as_template()
+    template = next(iter(window.store.templates().values()))
+    assert (template.name, template.schedule, template.schedule_time) == ("Codzienna", scheduler.DAILY, "07:15")
+    assert autostart, "kopie planowe potrzebują startu przy logowaniu"
 

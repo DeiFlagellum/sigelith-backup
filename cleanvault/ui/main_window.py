@@ -83,6 +83,7 @@ from .background import MSG_SHOW, SchedulerService, Tray
 from .browser import BrowserPage
 from .evidence_dialog import EvidenceDialog
 from .legal import LegalDialog, PrivacyDialog
+from .template_dialog import TemplateDialog
 from .theme import build_stylesheet, effective_accent, palette_for
 from .widgets import (
     Card,
@@ -364,6 +365,10 @@ class MainWindow(QMainWindow):
                    "rozmiar i datę modyfikacji, więc zwykle kończą się w kilka sekund.")
             )
         )
+        wizard_row = QHBoxLayout()
+        wizard_row.addWidget(self._wizard_button())
+        wizard_row.addStretch(1)
+        layout.addLayout(wizard_row)
 
         # --- źródła ---
         sources_card = Card(
@@ -1688,6 +1693,7 @@ class MainWindow(QMainWindow):
         card.add_layout(rename_row)
 
         actions = FlowLayout(spacing=10)
+        actions.addWidget(self._wizard_button())
         actions.addWidget(button(
             tr("Uruchom kopię"), tr("Wykonuje kopię według tego szablonu"),
             self._run_template, object_name="Primary", icon="play-fill",
@@ -1868,23 +1874,27 @@ class MainWindow(QMainWindow):
                    "Wyłączysz to w ustawieniach programu."),
             )
 
+    def _ask_template_settings(self, suggested: str) -> tuple[str, str, str] | None:
+        """Nazwa szablonu i kopia automatyczna; ``None`` po rezygnacji (w testach podmieniane)."""
+        dialog = TemplateDialog(list(self.store.templates().values()), suggested, self)
+        if dialog.exec() != QDialog.DialogCode.Accepted:
+            return None
+        name, schedule, schedule_time = dialog.values()
+        return (name, schedule, schedule_time) if name else None
+
     def _save_as_template(self) -> None:
-        name, accepted = QInputDialog.getText(
-            self,
-            tr("Zapisz szablon"),
-            tr("Nazwa szablonu:"),
-            text=(
-                tr("Kopia {folder}").format(folder=Path(self.source_list.paths()[0]).name)
-                if self.source_list.paths()
-                else tr("Nowy szablon")
-            ),
+        answer = self._ask_template_settings(
+            tr("Kopia {folder}").format(folder=Path(self.source_list.paths()[0]).name)
+            if self.source_list.paths()
+            else tr("Nowy szablon")
         )
-        if not accepted or not name.strip():
+        if answer is None:
             return
+        name, schedule, schedule_time = answer
         # Szablon o tej nazwie już istnieje: zastępujemy go (za zgodą), zamiast
         # tworzyć drugi o tej samej nazwie. Inaczej zmienionych ustawień nie
         # dało się wprowadzić do istniejącego szablonu.
-        existing = next((t for t in self.store.templates().values() if t.name == name.strip()), None)
+        existing = next((t for t in self.store.templates().values() if t.name == name), None)
         if existing is not None:
             answer = QMessageBox.question(
                 self,
@@ -1898,7 +1908,7 @@ class MainWindow(QMainWindow):
                 return
         config = self._current_config()
         from_form = {
-            "name": name.strip(),
+            "name": name,
             "sources": config.sources,
             "destination": config.destination,
             "structure": config.structure,
@@ -1918,15 +1928,20 @@ class MainWindow(QMainWindow):
             "remember_password": self.remember_cb.isChecked(),
         }
         if existing is not None:
-            # Z formularza przychodzi tylko to, co formularz pokazuje. Harmonogram,
-            # kopia poza domem i historia przebiegów zostają z zastępowanego
-            # szablonu — wcześniej zastąpienie po cichu kasowało harmonogram.
+            # Z formularza przychodzi tylko to, co formularz pokazuje. Kopia poza domem
+            # i historia przebiegów zostają z zastępowanego szablonu; harmonogram okno
+            # zapisu podpowiada z niego (TemplateDialog), więc też go nie kasuje.
             template = replace(existing, **from_form)
             if existing.remember_password and not template.remember_password:
                 secrets_store.delete_password(existing.id)
         else:
             template = Template(**from_form)
+        template.schedule = schedule
+        template.schedule_time = schedule_time
+        scheduler.arm(template)
         self.store.put_template(template)
+        if schedule != scheduler.MANUAL:
+            self._ensure_autostart()
         if template.encrypt and template.remember_password:
             saved = secrets_store.save_password(template.id, self.password_field.password())
             if not saved:
@@ -2160,7 +2175,6 @@ class MainWindow(QMainWindow):
             lambda on: self.store.set_setting("show_welcome", bool(on))
         )
         look.add(self.welcome_cb)
-        look.add_layout(self._wizard_row())
 
         accent_row = QHBoxLayout()
         accent_row.addWidget(button(tr("Kolor wyróżnienia…"), tr("Zmienia kolor przycisków i zaznaczeń"), self._pick_accent))
@@ -2293,16 +2307,14 @@ class MainWindow(QMainWindow):
                 return
             self._set_status(tr("Nie udało się zmienić startu przy logowaniu — szczegóły w dzienniku."))
 
-    def _wizard_row(self) -> QHBoxLayout:
-        row = QHBoxLayout()
-        row.addWidget(button(
-            tr("Uruchom kreator…"),
+    def _wizard_button(self) -> QPushButton:
+        """Kreator kopii — na ekranie kopii i na liście szablonów, bo tworzy kopię, a nie ustawia program."""
+        return button(
+            tr("Nowa kopia krok po kroku…"),
             tr("Ustawia kopię krok po kroku i zapisuje ją jako szablon"),
             self.run_setup_wizard,
             icon="stars",
-        ))
-        row.addStretch(1)
-        return row
+        )
 
     def _change_theme(self) -> None:
         theme = self.theme_combo.currentData()

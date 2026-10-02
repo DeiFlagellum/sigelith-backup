@@ -423,7 +423,9 @@ def test_replacing_a_template_keeps_its_schedule_and_cloud(window, tmp_path, mon
                                    offsite_enabled=True, last_success=123.0)
     window.store.put_template(template)
     window._apply_template_to_form(template)
-    monkeypatch.setattr(QInputDialog, "getText", lambda *a, **k: (template.name, True))
+    # okno zapisu podpowiada harmonogram zastępowanego szablonu (TemplateDialog), użytkownik go nie zmienia
+    monkeypatch.setattr(window, "_ask_template_settings",
+                        lambda _suggested: (template.name, template.schedule, template.schedule_time))
     monkeypatch.setattr(QMessageBox, "question", lambda *a, **k: QMessageBox.StandardButton.Yes)
     window.catchup_spin.setValue(3)
     window._save_as_template()

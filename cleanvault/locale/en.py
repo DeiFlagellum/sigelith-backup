@@ -842,7 +842,7 @@ TEXTS: dict[str, str] = {
         "Your personal files from your user folders. The most common choice.",
     "Uruchamia kreator, który ustawi kopię krok po kroku":
         "Starts the wizard, which sets up the backup step by step",
-    "Uruchom kreator…": "Run the wizard…",
+    "Nowa kopia krok po kroku…": "New backup, step by step…",
     "Ustawia kopię krok po kroku i zapisuje ją jako szablon":
         "Sets up the backup step by step and saves it as a template",
     "Ustawienia pierwszej kopii": "Setting up your first backup",
@@ -1825,4 +1825,6 @@ TEXTS: dict[str, str] = {
         "The backup will stay current: changes go into today's version a few minutes after they are saved, and when the drive is connected the backup catches up at once.",
     # opis bieżącej operacji w pasku stanu („Trwa: przywracanie…”)
     "przywracanie": "restore",
+    # tytuł kreatora, gdy zakłada kolejną kopię (nie pierwszą)
+    "Nowa kopia krok po kroku": "New backup, step by step",
 }

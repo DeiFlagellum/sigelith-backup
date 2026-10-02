@@ -920,8 +920,8 @@ TEXTS: dict[str, str] = {
         '사용자 폴더에 있는 개인 파일입니다. 가장 많이 선택하는 항목입니다.',
     'Uruchamia kreator, który ustawi kopię krok po kroku':
         '백업을 단계별로 설정하는 마법사를 시작합니다',
-    'Uruchom kreator…':
-        '마법사 실행…',
+    'Nowa kopia krok po kroku…':
+        '새 백업 단계별 설정…',
     'Ustawia kopię krok po kroku i zapisuje ją jako szablon':
         '백업을 단계별로 설정하고 템플릿으로 저장합니다',
     'Ustawienia pierwszej kopii':
@@ -1882,4 +1882,6 @@ TEXTS: dict[str, str] = {
         '백업이 실시간으로 유지됩니다: 변경 사항은 저장하고 몇 분 뒤 오늘의 버전에 반영되며, 드라이브를 연결하면 백업이 바로 동기화됩니다.',
     'przywracanie':
         '복원',
+    'Nowa kopia krok po kroku':
+        '새 백업 단계별 설정',
 }

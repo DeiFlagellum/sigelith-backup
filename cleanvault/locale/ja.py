@@ -920,8 +920,8 @@ TEXTS: dict[str, str] = {
         'ユーザーフォルダーにある個人用ファイル。最も一般的な選択です。',
     'Uruchamia kreator, który ustawi kopię krok po kroku':
         'バックアップを順を追って設定するウィザードを起動します',
-    'Uruchom kreator…':
-        'ウィザードを起動…',
+    'Nowa kopia krok po kroku…':
+        '新しいバックアップを順を追って設定…',
     'Ustawia kopię krok po kroku i zapisuje ją jako szablon':
         'バックアップを順を追って設定し、テンプレートとして保存します',
     'Ustawienia pierwszej kopii':
@@ -1882,4 +1882,6 @@ TEXTS: dict[str, str] = {
         'バックアップは常に最新に保たれます：変更は保存の数分後に今日のバージョンに反映され、ドライブを接続するとすぐに同期されます。',
     'przywracanie':
         '復元',
+    'Nowa kopia krok po kroku':
+        '新しいバックアップを順を追って設定',
 }
